@@ -4,11 +4,16 @@ const COOKIE = "yrb_admin";
 const SESSION_TTL_SECONDS = 60 * 60 * 8;
 
 const password = process.env.ADMIN_PASSWORD?.trim() || "";
+// Rahasia terpisah untuk menandatangani sesi. Jika tidak diisi, dipakai turunan
+// password (kurang ideal: password pendek bisa ditebak dari cookie yang bocor).
+const sessionSecret = process.env.SESSION_SECRET?.trim() || "";
 
 export const adminConfigured = password.length >= 6;
 
 function sessionKey(): Buffer {
-  return createHmac("sha256", password).update("yrb-farm/session/v1").digest();
+  return createHmac("sha256", sessionSecret || password)
+    .update("yrb-farm/session/v1")
+    .digest();
 }
 
 function sign(payload: string): string {

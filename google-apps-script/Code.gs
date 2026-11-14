@@ -232,6 +232,28 @@ function adminData_() {
   return { reviews: reviews, promos: promos, settings: settings_() };
 }
 
+var LOGIN_MAX_FAILS = 5;
+var LOGIN_WINDOW_SECONDS = 900; // 15 menit
+
+function loginKey_(raw) {
+  var s = String(raw || 'unknown').slice(0, 80);
+  var bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s);
+  return 'lf:' + Utilities.base64EncodeWebSafe(bytes).slice(0, 32);
+}
+
+function loginState_(raw) {
+  var n = Number(CacheService.getScriptCache().get(loginKey_(raw)) || 0);
+  return { locked: n >= LOGIN_MAX_FAILS, fails: n };
+}
+
+function loginFail_(raw) {
+  var cache = CacheService.getScriptCache();
+  var key = loginKey_(raw);
+  var n = Number(cache.get(key) || 0) + 1;
+  cache.put(key, String(n), LOGIN_WINDOW_SECONDS);
+  return { locked: n >= LOGIN_MAX_FAILS, fails: n };
+}
+
 function doGet(e) {
   try {
     var params = (e && e.parameter) || {};
@@ -311,6 +333,17 @@ function doPost(e) {
       }
       case 'settings.save': {
         return json_({ ok: true, data: saveSettings_(payload) });
+      }
+      // Pembatas login yang tahan lintas instance Vercel (disimpan di CacheService).
+      case 'login.check': {
+        return json_({ ok: true, data: loginState_(payload.key) });
+      }
+      case 'login.fail': {
+        return json_({ ok: true, data: loginFail_(payload.key) });
+      }
+      case 'login.ok': {
+        CacheService.getScriptCache().remove(loginKey_(payload.key));
+        return json_({ ok: true });
       }
       default:
         return json_({ ok: false, error: 'unknown_action' });

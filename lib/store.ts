@@ -266,3 +266,24 @@ export async function adminSaveSettings(settings: SiteSettings) {
   }
   return { ok: false, error: "DATABASE_NOT_CONFIGURED" };
 }
+
+/* ---------------- persistent login throttle ---------------- */
+
+// Dipakai agar percobaan login salah dihitung lintas instance serverless.
+// Jika storage tidak terhubung atau gagal, fungsi ini "fail open" dan
+// pembatas di memori (lib/rate-limit.ts) tetap berlaku.
+export async function loginLocked(key: string): Promise<boolean> {
+  if (!storageConfigured) return false;
+  const res = await writeApi<{ locked: boolean }>("login.check", { key });
+  return Boolean(res.ok && res.data?.locked);
+}
+
+export async function loginFailed(key: string): Promise<void> {
+  if (!storageConfigured) return;
+  await writeApi("login.fail", { key });
+}
+
+export async function loginSucceeded(key: string): Promise<void> {
+  if (!storageConfigured) return;
+  await writeApi("login.ok", { key });
+}

@@ -32,8 +32,10 @@ Buka http://localhost:3000. Tanpa `SHEET_API_URL`, data disimpan sementara di
    - Klik **Deploy**, izinkan akses, lalu salin URL yang berakhiran `/exec`.
 5. Di Vercel → project → **Settings** → **Environment Variables**, tambahkan:
    - `ADMIN_PASSWORD` = password panel admin (jangan disimpan di repo)
+   - `SESSION_SECRET` = teks acak 40+ karakter untuk menandatangani sesi login
    - `SHEET_API_URL` = URL `/exec` tadi
    - `SHEET_API_TOKEN` = nilai `API_SECRET` tadi
+   - Setiap kali `Code.gs` berubah: **Deploy → Manage deployments → Edit → New version → Deploy** (URL tetap sama).
 6. **Deployments** → **Redeploy** agar variabel terbaca.
 
 Tab `reviews`, `promos`, dan `settings` dibuat otomatis oleh Apps Script saat
@@ -55,7 +57,7 @@ diterbitkan admin.
 - Password admin hanya dicek di server; tidak pernah dikirim ke browser.
 - Sesi memakai cookie HttpOnly bertanda tangan HMAC, berlaku 8 jam.
 - Semua endpoint admin menolak permintaan tanpa sesi dan tanpa header `x-yrb-admin`.
-- Login dibatasi 5 percobaan / 10 menit per IP, pengiriman ulasan 4 / jam per IP.
+- Login dibatasi 5 percobaan salah / 15 menit per IP, dihitung permanen di Apps Script (tahan lintas instance Vercel), pengiriman ulasan 4 / jam per IP.
 - Token Apps Script hanya ada di environment server, tidak masuk bundle klien.
 - Nilai sel yang diawali `=`, `+`, `-`, `@` dinetralkan agar tidak jadi formula.
 - `.env*`, `.data/`, `node_modules/`, dan hasil build diabaikan git.
