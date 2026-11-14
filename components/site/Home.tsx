@@ -1,12 +1,31 @@
 import Image from "next/image";
-import { CheckIcon, StarIcon, WhatsAppIcon } from "@/components/icons";
-import HeroStage from "@/components/site/HeroStage";
-import ReviewForm from "@/components/site/ReviewForm";
+import Link from "next/link";
 import type { CSSProperties } from "react";
+import {
+  ArrowIcon,
+  CheckIcon,
+  LeafIcon,
+  MailIcon,
+  PhoneIcon,
+  PinIcon,
+  ScaleIcon,
+  ShieldIcon,
+  SproutIcon,
+  StarIcon,
+  TruckIcon,
+} from "@/components/icons";
+import Faq from "@/components/site/Faq";
+import ReviewForm from "@/components/site/ReviewForm";
+import ReviewsCarousel from "@/components/site/ReviewsCarousel";
 import type { Lang } from "@/lib/i18n";
-import { getDict } from "@/lib/i18n";
+import { getDict, site } from "@/lib/i18n";
 import type { PublicContent } from "@/lib/types";
-import { averageRating, formatDate, formatDayMonth, waLink } from "@/lib/utils";
+import { averageRating, formatDayMonth } from "@/lib/utils";
+
+const pointIcons = [ScaleIcon, SproutIcon, LeafIcon];
+const deliveryIcons = [TruckIcon, ShieldIcon];
+
+const delay = (value: number) => ({ "--d": value }) as CSSProperties;
 
 function Stars({ value }: { value: number }) {
   return (
@@ -21,15 +40,8 @@ function Stars({ value }: { value: number }) {
 export default function Home({ lang, content }: { lang: Lang; content: PublicContent }) {
   const t = getDict(lang);
   const { settings, promos, reviews } = content;
-  const wa = (msg?: string) => waLink(settings.waNumber, msg);
-  const serviceThumbs = [
-    "/images/flock-close.jpg",
-    "/images/domba-kurban.jpg",
-    "/images/barn-corridor.jpg",
-    "/images/ram-portrait.jpg",
-  ];
-  const avg = averageRating(reviews.map((r) => r.rating));
-  const year = new Date().getFullYear();
+  const avg = averageRating(reviews.map((review) => review.rating));
+  const avgNumber = reviews.length ? Number(avg.replace(",", ".")) : 0;
 
   return (
     <>
@@ -38,513 +50,500 @@ export default function Home({ lang, content }: { lang: Lang; content: PublicCon
       </a>
 
       <main id="main">
-        <section className="hero" id="beranda">
-          <div className="container hero-grid">
+        <section className="hero" id="beranda" aria-labelledby="hero-title">
+          <div className="hero-grid">
             <div className="hero-copy">
-              <p className="eyebrow" data-reveal>
+              <span className="hero-lamb" data-reveal="fade" aria-hidden="true">
+                <span className="hero-lamb-sway">
+                  <Image
+                    className="hero-lamb-face"
+                    src="/images/lamb-face.png"
+                    alt=""
+                    width={760}
+                    height={668}
+                    sizes="(max-width: 760px) 98px, 136px"
+                  />
+                  <Image
+                    className="hero-lamb-face hero-lamb-blink"
+                    src="/images/lamb-face-blink.png"
+                    alt=""
+                    width={760}
+                    height={668}
+                    sizes="(max-width: 760px) 98px, 136px"
+                  />
+                </span>
+              </span>
+              <span className="tag tag--light" data-reveal>
                 {t.hero.eyebrow}
-              </p>
-              <h1 data-reveal style={{ "--d": 1 } as CSSProperties}>
-                {t.hero.titleA}
-                <br />
-                <em>{t.hero.titleB}</em>
+              </span>
+              <h1 className="hero-title" id="hero-title">
+                <span data-reveal="fade">{t.hero.titleA}</span>
+                <span data-reveal="fade" style={delay(1)}>
+                  {t.hero.titleB}
+                </span>
               </h1>
-              <p className="hero-desc" data-reveal style={{ "--d": 2 } as CSSProperties}>
-                {t.hero.desc}
+              <p className="hero-lead" data-reveal style={delay(2)}>
+                {t.hero.lead}
               </p>
-              <div className="hero-ctas" data-reveal style={{ "--d": 3 } as CSSProperties}>
-                <a className="btn" href={wa(t.contact.message)} target="_blank" rel="noopener noreferrer">
-                  <WhatsAppIcon />
+              <div className="hero-actions" data-reveal style={delay(3)}>
+                <a className="btn btn--cream" href="#produk">
                   {t.hero.cta}
+                  <ArrowIcon />
                 </a>
-                <a className="btn btn--ghost" href="#layanan">
-                  {t.hero.secondary}
+                <a
+                  className="hero-link"
+                  href={site.mapsFarm}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t.hero.locationCta}
+                  <ArrowIcon />
                 </a>
               </div>
-
-              <dl className="stats" data-reveal style={{ "--d": 4 } as CSSProperties}>
-                {t.hero.stats.map((stat) => (
-                  <div key={stat.label}>
-                    <dt>{stat.value}</dt>
-                    <dd>{stat.label}</dd>
-                  </div>
-                ))}
-              </dl>
             </div>
 
-            <div data-reveal="fade" className="hero-stage-wrap">
-              <HeroStage liveLabel={t.hero.live} fallbackLabel={t.hero.fallback} caption={t.hero.caption} />
-            </div>
+            <figure className="hero-photo" data-reveal="fade" style={delay(1)}>
+              <div className="hero-mark" data-parallax="0.02">
+                <Image
+                  className="hero-mark-logo"
+                  src="/images/logo-berkah.png"
+                  alt=""
+                  width={760}
+                  height={493}
+                  priority
+                  quality={95}
+                  sizes="(max-width: 980px) 340px, 440px"
+                />
+              </div>
+              <figcaption>{t.hero.caption}</figcaption>
+            </figure>
           </div>
+
+          <ul className="hero-stats">
+            {t.hero.stats.map((stat, i) => (
+              <li key={stat.label} data-reveal style={delay(i)}>
+                <strong>{stat.value}</strong>
+                <span>{stat.label}</span>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <div className="marquee" aria-hidden="true">
           <div className="marquee-track">
-            {[...t.marquee, ...t.marquee].map((word, i) => (
-              <span key={`${word}-${i}`}>{word}</span>
+            {[...t.marquee, ...t.marquee].map((item, i) => (
+              <span key={`${item}-${i}`}>{item}</span>
             ))}
           </div>
         </div>
 
-        {/* 01 about */}
-        <section className="section" id="tentang">
-          <div className="container about-grid">
-            <div>
-              <p className="eyebrow" data-reveal>
-                {t.about.eyebrow}
+        {promos.length ? (
+          <section className="section" id="promo">
+            <div className="container">
+              <header className="sec-head sec-head--center">
+                <span className="tag" data-reveal>
+                  {t.promo.eyebrow}
+                </span>
+                <h2 className="display" data-reveal style={delay(1)}>
+                  {t.promo.title}
+                </h2>
+              </header>
+
+              <div className="promo-grid">
+                {promos.slice(0, 3).map((promo, i) => (
+                  <article className="promo-card" key={promo.id} data-reveal style={delay(i)}>
+                    {promo.badge ? <span className="promo-badge">{promo.badge}</span> : null}
+                    <h3>{promo.title}</h3>
+                    <p>{promo.description}</p>
+                    {promo.validUntil ? (
+                      <span className="promo-until">
+                        {t.promo.until} {formatDayMonth(promo.validUntil, lang)}
+                      </span>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        <section className="section" id="produk">
+          <div className="container">
+            <header className="sec-head sec-head--center">
+              <span className="tag" data-reveal>
+                {t.products.eyebrow}
+              </span>
+              <h2 className="display" data-reveal style={delay(1)}>
+                {t.products.title}
+              </h2>
+              <p className="sec-desc" data-reveal style={delay(2)}>
+                {t.products.desc}
               </p>
-              <h2 className="display" data-reveal style={{ "--d": 1, marginTop: "1.2rem" } as CSSProperties}>
+            </header>
+
+            <div className="product-grid">
+              {t.products.items.map((item, i) => (
+                <Link
+                  className="product"
+                  key={item.slug}
+                  href={`${lang === "en" ? "/en" : ""}/produk/${item.slug}`}
+                  data-reveal
+                  style={delay(i % 3)}
+                >
+                  <div className="product-head">
+                    <h3>{item.name}</h3>
+                    <span>{item.meta}</span>
+                  </div>
+                  <div className="product-media">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      fill
+                      sizes="(max-width: 620px) 86vw, (max-width: 1000px) 44vw, 30vw"
+                      quality={82}
+                    />
+                  </div>
+                  <p className="product-body">{item.body}</p>
+                  <span className="product-more">
+                    {t.products.open}
+                    <ArrowIcon />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section section--tint" id="tentang">
+          <div className="container about-grid">
+            <figure className="about-media" data-reveal="fade">
+              <Image
+                src="/images/farm-barn.jpg"
+                alt={t.about.imageAlt}
+                width={760}
+                height={820}
+                sizes="(max-width: 520px) 90vw, 430px"
+                quality={82}
+              />
+              <figcaption>{t.hero.caption}</figcaption>
+            </figure>
+
+            <div className="about-copy">
+              <span className="tag" data-reveal>
+                {t.about.eyebrow}
+              </span>
+              <h2 className="display" data-reveal style={delay(1)}>
                 {t.about.title}
               </h2>
-              <p className="about-lead" data-reveal style={{ "--d": 2 } as CSSProperties}>
+              <p className="about-lead" data-reveal style={delay(2)}>
                 {t.about.lead}
               </p>
-              <p className="about-body" data-reveal style={{ "--d": 3 } as CSSProperties}>
-                {t.about.body}
-              </p>
-              <p className="about-note" data-reveal style={{ "--d": 4 } as CSSProperties}>
-                {t.about.regionNote}
-              </p>
-            </div>
 
-            <figure className="about-fig" data-reveal="fade" style={{ "--d": 2 } as CSSProperties}>
-              <div className="frame">
-                <Image
-                  src="/images/barn-wide.jpg"
-                  alt={t.about.photoNote}
-                  fill
-                  sizes="(max-width: 900px) 92vw, 44vw"
-                  quality={82}
-                />
+              <ul className="about-points">
+                {t.about.points.map((point, i) => {
+                  const Icon = pointIcons[i];
+                  return (
+                    <li key={point.title} data-reveal style={delay(i)}>
+                      <span className="about-point-icon">
+                        <Icon />
+                      </span>
+                      <div>
+                        <strong>{point.title}</strong>
+                        <p>{point.body}</p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="about-quality" data-reveal="fade">
+                <strong>{t.about.qualityTitle}</strong>
+                <p>{t.about.qualityText}</p>
               </div>
-              <figcaption>
-                <span>{t.about.photoNote}</span>
-                <span>2014—{year}</span>
-              </figcaption>
-            </figure>
-          </div>
-
-          <div className="container pillars">
-            {t.about.pillars.map((pillar, i) => (
-              <article className="pillar" key={pillar.title} data-reveal style={{ "--d": i } as CSSProperties}>
-                <h3>
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                  {pillar.title}
-                </h3>
-                <p>{pillar.body}</p>
-              </article>
-            ))}
+            </div>
           </div>
         </section>
 
-        {/* 02 vision */}
-        <section className="section vision" id="visi">
+        <section className="section" id="visi">
           <div className="container">
-            <div className="vision-grid">
-              <div>
-                <p className="eyebrow eyebrow--paper" data-reveal>
-                  {t.vision.eyebrow}
-                </p>
-                <h2 className="display" data-reveal style={{ "--d": 1, marginTop: "1.2rem" } as CSSProperties}>
-                  {t.vision.title}
-                </h2>
-                <span className="vision-label">{t.vision.visionLabel}</span>
-                <p className="vision-quote" data-reveal>
-                  {t.vision.vision}
-                </p>
-              </div>
+            <header className="sec-head sec-head--center">
+              <span className="tag" data-reveal>
+                {t.vision.eyebrow}
+              </span>
+              <h2 className="display" data-reveal style={delay(1)}>
+                {t.vision.title}
+              </h2>
+            </header>
 
-              <div>
-                <span className="vision-label" style={{ marginTop: 0 }}>
-                  {t.vision.missionLabel}
-                </span>
-                <ol className="missions">
-                  {t.vision.missions.map((mission, i) => (
-                    <li key={mission} data-reveal style={{ "--d": i } as CSSProperties}>
-                      <span>{mission}</span>
-                    </li>
+            <div className="vision-grid">
+              <article className="vision-card" data-reveal>
+                <span className="tag">{t.vision.visionTitle}</span>
+                <p>{t.vision.vision}</p>
+              </article>
+
+              <article className="vision-card" data-reveal style={delay(1)}>
+                <span className="tag">{t.vision.missionTitle}</span>
+                <ol>
+                  {t.vision.mission.map((item) => (
+                    <li key={item}>{item}</li>
                   ))}
                 </ol>
-              </div>
+              </article>
             </div>
 
-            <div className="motto" data-reveal>
-              <p>“{t.vision.motto}”</p>
-              <span>{t.vision.mottoLabel}</span>
-            </div>
-          </div>
-        </section>
-
-        {/* 03 services */}
-        <section className="section" id="layanan">
-          <div className="container">
-            <div className="section-head">
-              <div>
-                <p className="eyebrow" data-reveal>
-                  {t.services.eyebrow}
-                </p>
-                <h2 className="display" data-reveal style={{ "--d": 1, marginTop: "1.2rem" } as CSSProperties}>
-                  {t.services.title}
-                </h2>
-              </div>
-              <p data-reveal style={{ "--d": 2 } as CSSProperties}>
-                {t.markets.note}
-              </p>
-            </div>
-
-            <div className="svc-list">
-              {t.services.items.map((item, i) => (
-                <article className="svc" key={item.title} data-reveal style={{ "--d": i } as CSSProperties}>
-                  <span className="svc-no">{String(i + 1).padStart(2, "0")}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.body}</p>
-                  <span className="svc-meta">{item.meta}</span>
-                  <Image
-                    className="svc-thumb"
-                    src={serviceThumbs[i]}
-                    alt=""
-                    width={148}
-                    height={96}
-                    sizes="148px"
-                  />
-                </article>
-              ))}
-            </div>
-
-            <div className="svc-values">
-              <div>
-                <p className="eyebrow" data-reveal>
-                  {t.services.valueEyebrow}
-                </p>
-                <h3 data-reveal style={{ marginTop: "0.9rem" } as CSSProperties}>
-                  {t.services.valueTitle}
-                </h3>
-              </div>
-              <ul className="value-list" data-reveal>
-                {t.services.values.map((value) => (
-                  <li key={value}>{value}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* 04 qurban */}
-        <section className="section qurban" id="aqiqah">
-          <div className="container qurban-grid">
-            <figure className="qurban-fig" data-reveal="fade">
-              <div className="frame">
-                <Image
-                  src="/images/domba-kurban.jpg"
-                  alt={t.qurban.caption}
-                  fill
-                  sizes="(max-width: 860px) 92vw, 42vw"
-                  quality={82}
-                />
-              </div>
-              <figcaption>{t.qurban.caption}</figcaption>
-            </figure>
-
-            <div>
-              <p className="eyebrow" data-reveal>
-                {t.qurban.eyebrow}
-              </p>
-              <h2 className="display" data-reveal style={{ "--d": 1 } as CSSProperties}>
-                {t.qurban.title}
-              </h2>
-              <p className="qurban-body" data-reveal style={{ "--d": 2 } as CSSProperties}>
-                {t.qurban.body}
-              </p>
-
-              <ul className="checks">
-                {t.qurban.checks.map((check, i) => (
-                  <li key={check} data-reveal style={{ "--d": i } as CSSProperties}>
-                    <CheckIcon />
-                    <span>{check}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="qurban-ctas" data-reveal>
-                <a className="btn" href={wa(t.qurban.aqiqahMessage)} target="_blank" rel="noopener noreferrer">
-                  <WhatsAppIcon />
-                  {t.qurban.aqiqahCta}
-                </a>
-                <a className="btn btn--ghost" href={wa(t.qurban.qurbanMessage)} target="_blank" rel="noopener noreferrer">
-                  {t.qurban.qurbanCta}
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 05 process */}
-        <section className="section" id="alur">
-          <div className="container">
-            <div className="section-head">
-              <div>
-                <p className="eyebrow" data-reveal>
-                  {t.process.eyebrow}
-                </p>
-                <h2 className="display" data-reveal style={{ "--d": 1, marginTop: "1.2rem" } as CSSProperties}>
-                  {t.process.title}
-                </h2>
-              </div>
-              <p data-reveal style={{ "--d": 2 } as CSSProperties}>
-                {t.about.body}
-              </p>
-            </div>
-
-            <div className="process-grid">
-              {t.process.steps.map((step, i) => (
-                <article className="step" key={step.title} data-reveal style={{ "--d": i } as CSSProperties}>
-                  <span className="step-no">{String(i + 1).padStart(2, "0")}</span>
-                  <h3>{step.title}</h3>
-                  <p>{step.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 06 reasons */}
-        <section className="section section--tight" id="alasan">
-          <div className="container">
-            <div className="section-head">
-              <div>
-                <p className="eyebrow" data-reveal>
-                  {t.reasons.eyebrow}
-                </p>
-                <h2 className="display" data-reveal style={{ "--d": 1, marginTop: "1.2rem" } as CSSProperties}>
-                  {t.reasons.title}
-                </h2>
-              </div>
-              <p data-reveal style={{ "--d": 2 } as CSSProperties}>
-                {t.about.regionNote}
-              </p>
-            </div>
-
-            <div className="reasons-grid">
-              {t.reasons.items.map((reason, i) => (
-                <div className="reason" key={reason} data-reveal style={{ "--d": i } as CSSProperties}>
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                  <p>{reason}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 07 markets */}
-        <section className="section markets" id="pasar">
-          <div className="container">
-            <div className="section-head">
-              <div>
-                <p className="eyebrow eyebrow--paper" data-reveal>
-                  {t.markets.eyebrow}
-                </p>
-                <h2 className="display" data-reveal style={{ "--d": 1, marginTop: "1.2rem" } as CSSProperties}>
-                  {t.markets.title}
-                </h2>
-              </div>
-            </div>
-
-            <ul className="market-list">
-              {t.markets.items.map((item, i) => (
-                <li key={item} data-reveal style={{ "--d": i } as CSSProperties}>
-                  {item}
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                </li>
-              ))}
-            </ul>
-
-            <p className="market-note" data-reveal>
-              {t.markets.note}
+            <p className="motto" data-reveal="fade">
+              {t.vision.motto}
             </p>
           </div>
         </section>
 
-        {/* promo */}
-        <section className="section" id="promo">
+        <section className="section" id="pasokan">
           <div className="container">
-            <div className="promo-head">
-              <div>
-                <p className="eyebrow" data-reveal>
-                  {t.promos.eyebrow}
-                </p>
-                <h2 className="display" data-reveal style={{ "--d": 1, marginTop: "1.2rem" } as CSSProperties}>
-                  {t.promos.title}
+            <div className="supply-band">
+              <div className="supply-copy">
+                <span className="tag tag--light" data-reveal>
+                  {t.supply.eyebrow}
+                </span>
+                <h2 className="display" data-reveal style={delay(1)}>
+                  {t.supply.title}
                 </h2>
-                <p style={{ marginTop: "0.8rem", color: "var(--ink-2)", maxWidth: "46ch" }} data-reveal>
-                  {t.promos.desc}
+                <p data-reveal style={delay(2)}>
+                  {t.supply.desc}
                 </p>
+                <span className="supply-foot" data-reveal>
+                  {t.supply.foot}
+                </span>
               </div>
-              <a className="link-arrow" href={wa(t.promos.message)} target="_blank" rel="noopener noreferrer">
-                {t.promos.cta}
-              </a>
-            </div>
 
-            {promos.length ? (
-              <div className="promo-grid">
-                {promos.map((promo, i) => (
-                  <article className="promo-card" key={promo.id} data-reveal style={{ "--d": i } as CSSProperties}>
-                    <div>
-                      <span className="promo-badge">{promo.badge || "Promo"}</span>
-                      <h3>{promo.title}</h3>
-                      {promo.description ? <p>{promo.description}</p> : null}
-                    </div>
-                    <div className="promo-foot">
-                      <span>
-                        {promo.validUntil ? `${t.promos.validUntil} ${formatDayMonth(promo.validUntil, lang)}` : ""}
-                      </span>
-                      <a href={wa(`${promo.title} — ${t.promos.message}`)} target="_blank" rel="noopener noreferrer">
-                        {t.promos.cta}
-                      </a>
-                    </div>
-                  </article>
+              <ul className="supply-tags">
+                {t.supply.items.map((item, i) => (
+                  <li key={item} data-reveal style={delay(i % 4)}>
+                    <CheckIcon />
+                    {item}
+                  </li>
                 ))}
-              </div>
-            ) : (
-              <div className="promo-empty" data-reveal>
-                <p>{t.promos.empty}</p>
-                <a className="btn" href={wa(t.promos.message)} target="_blank" rel="noopener noreferrer">
-                  <WhatsAppIcon />
-                  {t.promos.cta}
-                </a>
-              </div>
-            )}
+              </ul>
+            </div>
           </div>
         </section>
 
-        {/* gallery */}
-        <section className="section section--tight" id="galeri">
+        <section className="section section--tint" id="layanan">
           <div className="container">
-            <div className="section-head">
-              <div>
-                <p className="eyebrow" data-reveal>
-                  {t.gallery.eyebrow}
-                </p>
-                <h2 className="display" data-reveal style={{ "--d": 1, marginTop: "1.2rem" } as CSSProperties}>
-                  {t.gallery.title}
-                </h2>
-              </div>
-              <p data-reveal style={{ "--d": 2 } as CSSProperties}>
-                {t.gallery.desc}
-              </p>
-            </div>
+            <header className="sec-head sec-head--center">
+              <span className="tag" data-reveal>
+                {t.delivery.eyebrow}
+              </span>
+              <h2 className="display" data-reveal style={delay(1)}>
+                {t.delivery.title}
+              </h2>
+            </header>
 
-            <div className="gallery-strip">
-              {t.gallery.photos.map((photo, i) => {
-                const next = t.gallery.photos[(i + 1) % t.gallery.photos.length];
+            <div className="delivery-grid">
+              {t.delivery.items.map((item, i) => {
+                const Icon = deliveryIcons[i];
                 return (
-                  <figure className="arch" key={photo.src} data-reveal="fade" style={{ "--d": i } as CSSProperties}>
-                    <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 560px) 74vw, 30vw" quality={82} />
-                    <Image src={next.src} alt="" fill sizes="(max-width: 560px) 74vw, 30vw" quality={78} aria-hidden="true" />
-                    <figcaption>{photo.caption}</figcaption>
-                  </figure>
+                  <article className="delivery-card" key={item.title} data-reveal style={delay(i)}>
+                    <span className="delivery-icon">
+                      <Icon />
+                    </span>
+                    <h3>{item.title}</h3>
+                    <p>{item.body}</p>
+                  </article>
                 );
               })}
             </div>
+
+            <div className="reasons">
+              <header className="reasons-head" data-reveal>
+                <span className="tag">{t.reasons.eyebrow}</span>
+                <h2 className="display">{t.reasons.title}</h2>
+                <p>{t.reasons.desc}</p>
+              </header>
+
+              <ul className="reasons-list">
+                {t.reasons.items.map((item, i) => (
+                  <li key={item} data-reveal style={delay(i)}>
+                    <CheckIcon />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
-        {/* reviews */}
         <section className="section" id="ulasan">
-          <div className="container reviews-grid">
-            <div>
-              <p className="eyebrow" data-reveal>
+          <div className="container">
+            <header className="sec-head sec-head--center">
+              <span className="tag" data-reveal>
                 {t.reviews.eyebrow}
-              </p>
-              <h2 className="display" data-reveal style={{ "--d": 1, marginTop: "1.2rem" } as CSSProperties}>
+              </span>
+              <h2 className="display" data-reveal style={delay(1)}>
                 {t.reviews.title}
               </h2>
-              <p style={{ marginTop: "0.8rem", color: "var(--ink-2)", maxWidth: "48ch" }} data-reveal>
+              <p className="sec-desc" data-reveal style={delay(2)}>
                 {t.reviews.desc}
               </p>
 
-              <div className="score" data-reveal>
-                <strong>{avg}</strong>
-                <div>
-                  {reviews.length ? <Stars value={Math.round(Number(avg.replace(",", ".")))} /> : null}
-                  <small>
-                    {reviews.length} {t.reviews.count}
-                  </small>
+              {reviews.length ? (
+                <div className="review-score" data-reveal style={delay(3)}>
+                  <strong>{avg}</strong>
+                  <div>
+                    <Stars value={Math.round(avgNumber)} />
+                    <span>
+                      {reviews.length} {t.reviews.count}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ) : null}
+            </header>
 
-              <div className="review-list">
-                {reviews.length ? (
-                  reviews.slice(0, 8).map((review) => (
-                    <article className="review" key={review.id} data-reveal>
-                      <div className="review-head">
-                        <span className="review-name">{review.name}</span>
-                        <span className="review-meta">
-                          {review.city} · {formatDate(review.createdAt, lang)}
-                        </span>
-                      </div>
-                      <Stars value={review.rating} />
-                      <p>{review.message}</p>
-                    </article>
-                  ))
-                ) : (
-                  <p className="review-empty">{t.reviews.empty}</p>
-                )}
+            {reviews.length ? (
+              <ReviewsCarousel
+                reviews={reviews}
+                lang={lang}
+                labels={{ prev: t.reviews.prev, next: t.reviews.next }}
+                empty={t.reviews.empty}
+              />
+            ) : (
+              <div className="review-empty" data-reveal="fade">
+                <span className="review-empty-mark" aria-hidden="true">
+                  &ldquo;
+                </span>
+                <strong>{t.reviews.empty}</strong>
+                <p>{t.reviews.emptyNote}</p>
+                <a className="btn btn--ghost" href="#kontak">
+                  {t.reviews.linkCta}
+                  <ArrowIcon />
+                </a>
               </div>
-            </div>
+            )}
 
-            <div data-reveal="fade" style={{ "--d": 1 } as CSSProperties}>
-              <ReviewForm t={t.reviews} />
-            </div>
+            {reviews.length ? (
+              <div className="review-cta" data-reveal="fade">
+                <a className="btn btn--ghost" href="#kontak">
+                  {t.reviews.linkCta}
+                  <ArrowIcon />
+                </a>
+              </div>
+            ) : null}
           </div>
         </section>
 
-        {/* contact */}
-        <section className="section contact" id="kontak">
+        <section className="section" id="faq">
+          <div className="container faq-wrap">
+            <header className="sec-head sec-head--center">
+              <span className="tag" data-reveal>
+                {t.faq.eyebrow}
+              </span>
+              <h2 className="display" data-reveal style={delay(1)}>
+                {t.faq.title}
+              </h2>
+              <p className="sec-desc" data-reveal style={delay(2)}>
+                {t.faq.desc}
+              </p>
+            </header>
+
+            <Faq items={t.faq.items} />
+          </div>
+        </section>
+
+        <section className="section" id="kontak">
           <div className="container">
-            <div className="contact-top">
-              <div>
-                <p className="eyebrow" data-reveal>
-                  {t.contact.eyebrow}
-                </p>
-                <h2 className="display" data-reveal style={{ "--d": 1 } as CSSProperties}>
-                  {t.contact.title}
-                </h2>
-                <p style={{ marginTop: "0.9rem", color: "var(--ink-2)", maxWidth: "48ch" }} data-reveal>
-                  {t.contact.desc}
-                </p>
-              </div>
-              <a className="btn btn--brass" href={wa(t.contact.message)} target="_blank" rel="noopener noreferrer" data-reveal>
-                <WhatsAppIcon />
-                {t.contact.cta}
-              </a>
-            </div>
+            <div className="contact-band">
+              <div className="contact-grid">
+                <div className="contact-info">
+                  <span className="tag tag--light" data-reveal>
+                    {t.contact.eyebrow}
+                  </span>
+                  <h2 className="display" data-reveal style={delay(1)}>
+                    {t.contact.title}
+                  </h2>
+                  <p className="contact-desc" data-reveal style={delay(2)}>
+                    {t.contact.desc}
+                  </p>
 
-            <div className="contact-cols">
-              <div className="contact-col" data-reveal>
-                <h3>{t.contact.wa}</h3>
-                <a className="big" href={wa(t.contact.message)} target="_blank" rel="noopener noreferrer">
-                  {settings.phoneDisplay}
-                </a>
-                <br />
-                <a className="big" href={`mailto:${settings.email}`}>
-                  {settings.email}
-                </a>
-              </div>
+                  <ul className="contact-list">
+                    <li data-reveal>
+                      <span className="contact-icon">
+                        <PinIcon />
+                      </span>
+                      <div>
+                        <span>{t.contact.farm}</span>
+                        <strong>{settings.farmAddress}</strong>
+                        <a
+                          href={site.mapsFarm}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t.contact.openMap}
+                          <ArrowIcon />
+                        </a>
+                      </div>
+                    </li>
+                    <li data-reveal>
+                      <span className="contact-icon">
+                        <PinIcon />
+                      </span>
+                      <div>
+                        <span>{t.contact.office}</span>
+                        <strong>{settings.officeAddress}</strong>
+                        <a
+                          href={site.mapsOffice}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t.contact.openMap}
+                          <ArrowIcon />
+                        </a>
+                      </div>
+                    </li>
+                    <li data-reveal>
+                      <span className="contact-icon">
+                        <PhoneIcon />
+                      </span>
+                      <div>
+                        <span>{t.contact.phone}</span>
+                        <a href={`tel:+${settings.waNumber}`}>{settings.phoneDisplay}</a>
+                      </div>
+                    </li>
+                    <li data-reveal>
+                      <span className="contact-icon">
+                        <MailIcon />
+                      </span>
+                      <div>
+                        <span>{t.contact.email}</span>
+                        <a href={`mailto:${settings.email}`}>{settings.email}</a>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
 
-              <div className="contact-col" data-reveal style={{ "--d": 1 } as CSSProperties}>
-                <h3>{t.contact.farm}</h3>
-                <p>{settings.farmAddress}</p>
-                <a className="map-link" href="https://www.google.com/maps/search/?api=1&query=Margosari%20Limbangan%20Kendal" target="_blank" rel="noopener noreferrer">
-                  {t.contact.openMap}
-                </a>
-              </div>
-
-              <div className="contact-col" data-reveal style={{ "--d": 2 } as CSSProperties}>
-                <h3>{t.contact.office}</h3>
-                <p>{settings.officeAddress}</p>
-                <a className="map-link" href="https://www.google.com/maps/search/?api=1&query=Jl.%20Klentengsari%20Banyumanik%20Semarang" target="_blank" rel="noopener noreferrer">
-                  {t.contact.openMap}
-                </a>
+                <div className="contact-form-wrap" data-reveal="fade">
+                  <span className="contact-lamb" aria-hidden="true">
+                    <span className="contact-lamb-sway">
+                      <Image
+                        className="contact-lamb-face"
+                        src="/images/lamb-face.png"
+                        alt=""
+                        width={760}
+                        height={668}
+                        sizes="(max-width: 980px) 132px, 150px"
+                      />
+                      <Image
+                        className="contact-lamb-face contact-lamb-blink"
+                        src="/images/lamb-face-blink.png"
+                        alt=""
+                        width={760}
+                        height={668}
+                        sizes="(max-width: 980px) 132px, 150px"
+                      />
+                    </span>
+                  </span>
+                  <div className="contact-form">
+                    <ReviewForm t={t.reviews} />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

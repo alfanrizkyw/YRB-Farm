@@ -1,8 +1,8 @@
 import Image from "next/image";
+import { MailIcon, PhoneIcon, PinIcon } from "@/components/icons";
 import type { Lang } from "@/lib/i18n";
-import { getDict } from "@/lib/i18n";
+import { getDict, site } from "@/lib/i18n";
 import type { SiteSettings } from "@/lib/types";
-import { waLink } from "@/lib/utils";
 
 export default function Footer({ lang, settings }: { lang: Lang; settings: SiteSettings }) {
   const t = getDict(lang);
@@ -14,49 +14,73 @@ export default function Footer({ lang, settings }: { lang: Lang; settings: SiteS
       <div className="container">
         <div className="foot-grid">
           <div className="foot-brand">
-            <Image src="/images/logo.png" alt="" width={58} height={58} />
-            <div>
-              <h2>Yahya Rizki Bersama Farm</h2>
-              <p className="foot-tagline">{t.footer.tagline}</p>
-            </div>
+            <Image
+              src="/images/logo-berkah.png"
+              alt={site.name}
+              width={760}
+              height={493}
+              sizes="196px"
+            />
+            <p className="foot-tagline">{t.footer.tagline}</p>
+            <p className="foot-motto">{t.vision.motto}</p>
           </div>
 
-          <div>
+          <div className="foot-col">
             <h3>{t.footer.pages}</h3>
             <div className="foot-links">
+              <a href={`${home}#produk`}>{t.nav.products}</a>
               <a href={`${home}#tentang`}>{t.nav.about}</a>
-              <a href={`${home}#layanan`}>{t.nav.services}</a>
-              <a href={`${home}#galeri`}>{t.nav.gallery}</a>
-              <a href={`${home}#promo`}>{t.nav.promo}</a>
+              <a href={`${home}#pasokan`}>{t.nav.supply}</a>
               <a href={`${home}#ulasan`}>{t.nav.reviews}</a>
+              <a href={`${home}#faq`}>{t.nav.faq}</a>
               <a href={`${home}#kontak`}>{t.nav.contact}</a>
             </div>
           </div>
 
-          <div>
+          <div className="foot-col">
             <h3>{t.footer.visit}</h3>
             <p className="foot-address">
-              <span>{t.contact.farm}</span>
+              <span>
+                <PinIcon /> {t.contact.farm}
+              </span>
               {settings.farmAddress}
             </p>
+            <a className="foot-map" href={site.mapsFarm} target="_blank" rel="noopener noreferrer">
+              {t.contact.openMap}
+            </a>
             <p className="foot-address">
-              <span>{t.contact.office}</span>
+              <span>
+                <PinIcon /> {t.contact.office}
+              </span>
               {settings.officeAddress}
             </p>
-            <div className="foot-links">
-              <a href={waLink(settings.waNumber, t.contact.message)} target="_blank" rel="noopener noreferrer">
+            <a className="foot-map" href={site.mapsOffice} target="_blank" rel="noopener noreferrer">
+              {t.contact.openMap}
+            </a>
+          </div>
+
+          <div className="foot-col">
+            <h3>{t.contact.phone}</h3>
+            <div className="foot-contact">
+              <a href={`tel:${site.waNumber}`}>
+                <PhoneIcon />
                 {settings.phoneDisplay}
               </a>
-              <a href={`mailto:${settings.email}`}>{settings.email}</a>
+              <a href={`mailto:${settings.email}`}>
+                <MailIcon />
+                {settings.email}
+              </a>
             </div>
           </div>
         </div>
 
         <div className="foot-bottom">
           <span>
-            © {year} Yahya Rizki Bersama Farm. {t.footer.rights}
+            © {year} {site.name}. {t.footer.rights}
           </span>
-          <a href="/admin">{t.footer.admin}</a>
+          <div>
+            <a href="#main">{t.common.backToTop}</a>
+          </div>
         </div>
       </div>
     </footer>

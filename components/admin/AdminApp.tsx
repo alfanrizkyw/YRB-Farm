@@ -51,7 +51,7 @@ async function request(url: string, method: string, body?: unknown) {
 
 export default function AdminApp({ authed, configured, initial }: Props) {
   const router = useRouter();
-  const [tab, setTab] = useState<"reviews" | "promos" | "settings">("reviews");
+  const [tab, setTab] = useState<"dashboard" | "reviews" | "promos">("dashboard");
   const [reviews, setReviews] = useState<Review[]>(initial?.reviews ?? []);
   const [promos, setPromos] = useState<Promo[]>(initial?.promos ?? []);
   const [settings, setSettings] = useState<SiteSettings>(
@@ -95,24 +95,24 @@ export default function AdminApp({ authed, configured, initial }: Props) {
   return (
     <div className="admin-shell">
       <aside className="admin-rail">
-        <a className="admin-brand" href="/" aria-label="Yahya Rizki Bersama Farm">
-          <img src="/images/logo.png" alt="" width={36} height={36} />
+        <a className="admin-brand" href="/" aria-label="Berkah Rizki Bersama Farm">
+          <img className="admin-logo" src="/images/logo-berkah.png" alt="" width={760} height={493} />
           <span>
-            YRB Farm
+            Berkah Rizki Bersama
             <small>Panel admin</small>
           </span>
         </a>
 
         <nav className="admin-tabs" aria-label="Menu admin">
+          <button className="admin-tab" data-active={tab === "dashboard"} onClick={() => setTab("dashboard")} type="button">
+            Dasbor
+          </button>
           <button className="admin-tab" data-active={tab === "reviews"} onClick={() => setTab("reviews")} type="button">
             Ulasan
             {pending ? <small>{pending}</small> : null}
           </button>
           <button className="admin-tab" data-active={tab === "promos"} onClick={() => setTab("promos")} type="button">
             Promo
-          </button>
-          <button className="admin-tab" data-active={tab === "settings"} onClick={() => setTab("settings")} type="button">
-            Kontak
           </button>
         </nav>
 
@@ -139,16 +139,24 @@ export default function AdminApp({ authed, configured, initial }: Props) {
           </div>
         ) : null}
 
+        {tab === "dashboard" ? (
+          <DashboardPanel
+            settings={settings}
+            onChange={setSettings}
+            notify={notify}
+            refresh={() => router.refresh()}
+            reviews={reviews}
+            promos={promos}
+            connected={Boolean(initial?.connected)}
+          />
+        ) : null}
+
         {tab === "reviews" ? (
           <ReviewsPanel reviews={reviews} onChange={setReviews} notify={notify} refresh={() => router.refresh()} />
         ) : null}
 
         {tab === "promos" ? (
           <PromosPanel promos={promos} onChange={setPromos} notify={notify} refresh={() => router.refresh()} />
-        ) : null}
-
-        {tab === "settings" ? (
-          <SettingsPanel settings={settings} onChange={setSettings} notify={notify} refresh={() => router.refresh()} />
         ) : null}
       </main>
 
@@ -205,7 +213,7 @@ function Login({ configured }: { configured: boolean }) {
   return (
     <main className="login">
       <div className="login-card">
-        <img src="/images/logo.png" alt="Yahya Rizki Bersama Farm" width={56} height={56} />
+        <img className="login-logo" src="/images/logo-berkah.png" alt="Berkah Rizki Bersama Farm" width={760} height={493} />
         <h1>Masuk admin</h1>
         <p>Kelola ulasan, promo, dan kontak yang tampil di situs.</p>
 
@@ -759,9 +767,66 @@ function PromoEditor({
   );
 }
 
-/* ---------------- settings ---------------- */
+/* ---------------- dashboard ---------------- */
 
-function SettingsPanel({
+function DashboardPanel({
+  settings,
+  onChange,
+  notify,
+  refresh,
+  reviews,
+  promos,
+  connected,
+}: {
+  settings: SiteSettings;
+  onChange: (next: SiteSettings) => void;
+  notify: (kind: "ok" | "err", text: string) => void;
+  refresh: () => void;
+  reviews: Review[];
+  promos: Promo[];
+  connected: boolean;
+}) {
+  const published = reviews.filter((r) => r.status === "published").length;
+  const pending = reviews.filter((r) => r.status === "pending").length;
+  const activePromos = promos.filter((p) => p.active).length;
+
+  return (
+    <>
+      <div className="admin-head">
+        <div>
+          <p className="admin-eyebrow">Dasbor</p>
+          <h1>Ringkasan & data situs</h1>
+          <p>Ubah nomor, alamat, dan email di sini. Perubahan langsung dipakai situs.</p>
+        </div>
+      </div>
+
+      <div className="stat-grid">
+        <article className="stat-card">
+          <span>Ulasan tampil</span>
+          <strong>{published}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Menunggu diperiksa</span>
+          <strong>{pending}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Promo aktif</span>
+          <strong>{activePromos}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Database</span>
+          <strong data-ok={connected}>{connected ? "Terhubung" : "Lokal"}</strong>
+        </article>
+      </div>
+
+      <ContactForm settings={settings} onChange={onChange} notify={notify} refresh={refresh} />
+    </>
+  );
+}
+
+/* ---------------- contact form ---------------- */
+
+function ContactForm({
   settings,
   onChange,
   notify,
@@ -785,7 +850,7 @@ function SettingsPanel({
     try {
       await request("/api/admin/settings", "POST", form);
       onChange(form);
-      notify("ok", "Kontak diperbarui. Situs memakai data baru.");
+      notify("ok", "Data situs diperbarui. Situs memakai data baru.");
       refresh();
     } catch (err) {
       setError((err as Error).message);
@@ -796,13 +861,10 @@ function SettingsPanel({
   }
 
   return (
-    <>
-      <div className="admin-head">
-        <div>
-          <p className="admin-eyebrow">Kontak</p>
-          <h1>Nomor & alamat</h1>
-          <p>Nomor WhatsApp ini dipakai di semua tombol pesan pada situs.</p>
-        </div>
+    <section className="admin-section">
+      <div className="admin-subhead">
+        <h2>Kontak & situs</h2>
+        <p>Nomor WhatsApp ini dipakai di semua tombol pesan pada situs.</p>
       </div>
 
       <form className="admin-form" onSubmit={submit} style={{ maxWidth: "720px" }}>
@@ -869,10 +931,10 @@ function SettingsPanel({
 
         <div className="admin-form-actions">
           <button className="mini-btn mini-btn--primary" type="submit" disabled={busy}>
-            {busy ? "Menyimpan…" : "Simpan kontak"}
+            {busy ? "Menyimpan…" : "Simpan data situs"}
           </button>
         </div>
       </form>
-    </>
+    </section>
   );
 }

@@ -5,7 +5,7 @@ import "./admin/admin.css";
 import { fraunces, instrument } from "@/lib/fonts";
 
 export const metadata: Metadata = {
-  title: "Admin — YRB Farm",
+  title: "Admin — Berkah Rizki Bersama Farm",
   robots: { index: false, follow: false },
 };
 

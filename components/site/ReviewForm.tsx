@@ -10,7 +10,8 @@ type Props = {
 };
 
 export default function ReviewForm({ t }: Props) {
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
   const [state, setState] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -18,6 +19,11 @@ export default function ReviewForm({ t }: Props) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    if (rating === 0) {
+      setState("error");
+      setMessage(t.ratingRequired);
+      return;
+    }
     setState("sending");
     setMessage("");
 
@@ -36,7 +42,7 @@ export default function ReviewForm({ t }: Props) {
 
       if (!res.ok) throw new Error("failed");
       form.reset();
-      setRating(5);
+      setRating(0);
       setState("ok");
       setMessage(t.success);
     } catch {
@@ -48,7 +54,7 @@ export default function ReviewForm({ t }: Props) {
   return (
     <form className="review-form" onSubmit={onSubmit} noValidate>
       <h3>{t.formTitle}</h3>
-      <p className="form-note">{t.moderation}</p>
+      <p className="form-note">{t.formNote}</p>
 
       <div className="form-row">
         <div className="field">
@@ -63,20 +69,31 @@ export default function ReviewForm({ t }: Props) {
 
       <div className="field">
         <label id="rv-rating-label">{t.rating}</label>
-        <div className="rating-pick" role="group" aria-labelledby="rv-rating-label">
+        <div
+          className="rating-pick"
+          role="group"
+          aria-labelledby="rv-rating-label"
+          onMouseLeave={() => setHover(0)}
+        >
           {[1, 2, 3, 4, 5].map((n) => (
             <button
               key={n}
               type="button"
-              data-on={n <= rating}
+              data-on={n <= (hover || rating)}
               aria-label={`${n}`}
               aria-pressed={n === rating}
+              onMouseEnter={() => setHover(n)}
+              onFocus={() => setHover(n)}
+              onBlur={() => setHover(0)}
               onClick={() => setRating(n)}
             >
               <StarIcon />
             </button>
           ))}
         </div>
+        <span className="rating-hint" data-filled={rating > 0}>
+          {rating > 0 ? `${rating} / 5` : t.ratingHint}
+        </span>
       </div>
 
       <div className="field">

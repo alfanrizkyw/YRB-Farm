@@ -10,5 +10,6 @@ out/
 next-env.d.ts
 _extract/
 vibe_images/
+.qa/
 .DS_Store
 Thumbs.db

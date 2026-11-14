@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Header from "@/components/site/Header";
 import MotionRoot from "@/components/site/MotionRoot";
-import WaFloat from "@/components/site/WaFloat";
+import WaFx from "@/components/site/WaFx";
 import Footer from "@/components/site/Footer";
-import { fraunces, instrument } from "@/lib/fonts";
+import { baloo, jakarta } from "@/lib/fonts";
 import type { Lang } from "@/lib/i18n";
 import { getDict, site } from "@/lib/i18n";
 import { getPublicContent } from "@/lib/store";
@@ -41,7 +41,10 @@ export function buildMetadata(lang: Lang): Metadata {
       images: ["/og.jpg"],
     },
     robots: { index: true, follow: true },
-    icons: { icon: "/favicon.ico", apple: "/images/logo.png" },
+    icons: {
+      icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
+      apple: "/icon.png",
+    },
   };
 }
 
@@ -54,15 +57,16 @@ export default async function SiteShell({
 }) {
   const content = await getPublicContent();
   const t = getDict(lang);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yrb-farm.vercel.app";
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: site.name,
-    image: `${process.env.NEXT_PUBLIC_SITE_URL || "https://yrb-farm.vercel.app"}/images/logo.png`,
+    image: `${baseUrl}/images/logo-berkah.png`,
     description: t.meta.description,
     telephone: content.settings.phoneDisplay,
     email: content.settings.email,
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://yrb-farm.vercel.app",
+    url: baseUrl,
     address: [
       {
         "@type": "PostalAddress",
@@ -82,7 +86,7 @@ export default async function SiteShell({
   };
 
   return (
-    <html lang={lang} className={`${fraunces.variable} ${instrument.variable}`} suppressHydrationWarning>
+    <html lang={lang} className={`${baloo.variable} ${jakarta.variable}`} suppressHydrationWarning>
       <body>
         <script
           type="application/ld+json"
@@ -101,10 +105,11 @@ export default async function SiteShell({
           announcement={content.settings.announcement}
           menuLabel={t.common.menu}
         />
-        {children}
-        <Footer lang={lang} settings={content.settings} />
-        <WaFloat lang={lang} settings={content.settings} />
-        <div className="grain" aria-hidden="true" />
+        <div className="site-sheet">
+          {children}
+          <Footer lang={lang} settings={content.settings} />
+        </div>
+        <WaFx label={t.common.waOpening} />
         <MotionRoot />
       </body>
     </html>

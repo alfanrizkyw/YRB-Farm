@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   images: {
-    qualities: [75, 78, 82],
+    qualities: [75, 78, 80, 82, 90, 95],
   },
   async headers() {
     return [

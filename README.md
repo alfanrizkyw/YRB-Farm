@@ -1,10 +1,10 @@
-# Yahya Rizki Bersama Farm
+# Berkah Rizki Bersama Farm
 
 Situs profil dan pemesanan domba untuk kurban, aqiqah, penggemukan, dan pembibitan.
-Dibangun dengan Next.js 16, React 19, dan Three.js. Bahasa Indonesia & Inggris.
+Dibangun dengan Next.js 16 dan React 19. Bahasa Indonesia & Inggris.
 
 - Situs: `/` (ID) dan `/en` (EN)
-- Panel admin: `/admin`
+- Panel internal: tidak ditautkan dari situs, `noindex`, dan diblokir robots
 - Database: Google Sheets via Google Apps Script
 
 ## Menjalankan lokal
@@ -26,7 +26,7 @@ Buka http://localhost:3000. Tanpa `SHEET_API_URL`, data disimpan sementara di
    - Property: `API_SECRET`
    - Value: teks acak panjang (contoh buat dengan 40+ karakter). Simpan.
 4. **Deploy** → **New deployment** → pilih **Web app**.
-   - Description: `YRB Farm API`
+   - Description: `Berkah Rizki Bersama API`
    - Execute as: **Me**
    - Who has access: **Anyone**
    - Klik **Deploy**, izinkan akses, lalu salin URL yang berakhiran `/exec`.
@@ -43,7 +43,8 @@ pertama kali dipakai.
 
 ## Panel admin
 
-Buka `/admin`, masukkan `ADMIN_PASSWORD`. Di sana bisa:
+Panel internal terbuka lewat alamat yang hanya dibagikan ke pengelola, lalu masukkan
+`ADMIN_PASSWORD`. Di sana bisa:
 
 - menerbitkan, menyembunyikan, mengedit, menambah, dan menghapus ulasan;
 - menambah, mengedit, mengaktifkan, dan menghapus promo;
@@ -69,7 +70,7 @@ app/(id)         halaman Indonesia
 app/(en)/en      halaman Inggris
 app/(admin)      panel admin
 app/api          endpoint ulasan publik dan admin
-components       header, hero 3D, form ulasan, admin
+components       header, hero, form ulasan, admin
 lib              data store, sesi, validasi, i18n
 google-apps-script/Code.gs   API Google Sheets
 ```
