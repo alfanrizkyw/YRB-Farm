@@ -1,0 +1,513 @@
+export type Lang = "id" | "en";
+
+export const site = {
+  name: "Yahya Rizki Bersama Farm",
+  short: "YRB Farm",
+  founded: 2014,
+  email: "yahyarizkibersama@gmail.com",
+  farmAddress:
+    "Dsn. Cemanglek, Margosari, Kec. Limbangan, Kendal, Jawa Tengah",
+  officeAddress: "Jl. Klentengsari 11E, Banyumanik, Semarang",
+  mapsFarm:
+    "https://www.google.com/maps/search/?api=1&query=Margosari%20Limbangan%20Kendal",
+  mapsOffice:
+    "https://www.google.com/maps/search/?api=1&query=Jl.%20Klentengsari%20Banyumanik%20Semarang",
+};
+
+const id = {
+  meta: {
+    title: "Yahya Rizki Bersama Farm — Domba Kurban, Aqiqah & Penggemukan",
+    description:
+      "Penggemukan domba sejak 2014 di Limbangan, Kendal. Domba sehat untuk kurban, aqiqah, rumah makan, dan pembibitan. Populasi 2.000 ekor, pengiriman Jawa Tengah–Jogja–Cirebon–Bogor.",
+  },
+  nav: {
+    home: "Beranda",
+    about: "Tentang",
+    services: "Layanan",
+    gallery: "Galeri",
+    promo: "Promo",
+    reviews: "Ulasan",
+    contact: "Kontak",
+    cta: "Pesan domba",
+    langSwitch: "English",
+    admin: "Admin",
+  },
+  hero: {
+    eyebrow: "Peternakan domba · Limbangan, Kendal · Sejak 2014",
+    titleA: "Domba sehat,",
+    titleB: "urusan amanah.",
+    desc: "Penggemukan domba untuk kurban, aqiqah, rumah makan, dan pembibitan. Dua ribu ekor dirawat di Cemanglek, lalu dikirim ke Semarang, Tegal, Yogyakarta, Cirebon, dan Bogor.",
+    cta: "Pesan lewat WhatsApp",
+    secondary: "Lihat layanan",
+    caption: "Kandang Cemanglek, Limbangan",
+    live: "Ladang langsung",
+    fallback: "Pemandangan kandang",
+    stats: [
+      { value: "2.000", label: "Ekor populasi" },
+      { value: "550–700", label: "Ekor / bulan" },
+      { value: "2014", label: "Berdiri" },
+      { value: "5", label: "Wilayah pasok" },
+    ],
+  },
+  marquee: [
+    "Kurban",
+    "Aqiqah",
+    "Penggemukan",
+    "Pembibitan",
+    "Karkas segar",
+    "Sate siap masak",
+    "Kulit domba",
+    "Pupuk organik",
+  ],
+  about: {
+    eyebrow: "01 — Tentang",
+    title: "Sejak 2014 menggemukkan domba di lereng Limbangan.",
+    lead: "Yahya Rizki Bersama Farm bergerak di bidang peternakan penggemukan domba untuk kebutuhan daging, pemasok bibit, dan penyedia domba jantan untuk kurban.",
+    body: "Daging muda hasil penggemukan kami bertekstur lembut, empuk, dan minim lemak. Dalam satu bulan, penjualan tidak kurang dari 550–700 ekor.",
+    pillars: [
+      {
+        title: "Penggemukan",
+        body: "Domba untuk rumah makan, warung sate, kurban, aqiqah, dan penyedia Dam Haji — bobot menyesuaikan permintaan pasar.",
+      },
+      {
+        title: "Pembibitan",
+        body: "Bibit domba berkualitas untuk peternak penggemukan dan peternak pembiakan.",
+      },
+      {
+        title: "Pengolahan hasil",
+        body: "Karkas segar, sate siap masak, kulit domba, dan pupuk organik dari kotoran hewan (KOHE).",
+      },
+    ],
+    regionNote:
+      "Memasok rumah makan dan warung sate di Semarang, se-Kabupaten Tegal, DI Yogyakarta, Kabupaten Cirebon, dan Bogor.",
+    photoNote: "Kandang panggung, Cemanglek",
+  },
+  vision: {
+    eyebrow: "02 — Visi & misi",
+    title: "Unggul, terpercaya, berkelanjutan.",
+    visionLabel: "Visi",
+    vision:
+      "Menjadi peternakan domba penggemukan yang unggul, terpercaya, dan berkelanjutan dalam menghasilkan domba berkualitas — mengedepankan profesionalisme, kesejahteraan ternak, dan keberkahan usaha.",
+    missionLabel: "Misi",
+    missions: [
+      "Menyediakan domba yang sehat, berkualitas, dan sesuai kebutuhan pelanggan.",
+      "Menerapkan manajemen pemeliharaan yang baik: pakan bergizi, perawatan kesehatan, dan pemeliharaan yang optimal.",
+      "Membangun kepercayaan pelanggan melalui pelayanan yang jujur, amanah, dan profesional.",
+      "Mengembangkan usaha secara berkelanjutan dengan memanfaatkan inovasi di bidang peternakan.",
+      "Memberi manfaat ekonomi dan sosial bagi masyarakat sekitar, serta mendukung penyediaan hewan untuk rumah makan, warung, kurban, dan aqiqah yang berkualitas.",
+    ],
+    mottoLabel: "Motto",
+    motto: "Berkualitas, Amanah & Berkah",
+  },
+  services: {
+    eyebrow: "03 — Produk & layanan",
+    title: "Empat cara kami menyediakan domba.",
+    items: [
+      {
+        title: "Domba penggemukan",
+        body: "Domba jantan dan betina hasil penggemukan untuk kebutuhan rumah makan, warung sate, kurban, aqiqah, maupun pembibitan.",
+        meta: "Bobot menyesuaikan permintaan",
+      },
+      {
+        title: "Domba siap kurban",
+        body: "Domba sehat sesuai syariat, tersedia berbagai pilihan bobot dan harga.",
+        meta: "Jantan & betina",
+      },
+      {
+        title: "Penjualan domba hidup",
+        body: "Melayani pembelian satuan maupun dalam jumlah besar — untuk peternak, pedagang, dan instansi.",
+        meta: "Satuan / grosir",
+      },
+      {
+        title: "Bibit domba",
+        body: "Bibit berkualitas untuk peternak penggemukan atau peternak pembiakan lainnya.",
+        meta: "Untuk pengembangan ternak",
+      },
+    ],
+    valueEyebrow: "Nilai tambah",
+    valueTitle: "Dari satu ekor, tidak ada yang terbuang.",
+    values: ["Daging segar (karkas)", "Daging olahan — sate siap masak", "Kulit domba", "Pupuk organik (KOHE)"],
+  },
+  qurban: {
+    eyebrow: "04 — Aqiqah & kurban",
+    title: "Aqiqah dan kurban, satu standar: sehat dan sesuai syariat.",
+    body: "Kami menyediakan domba jantan untuk kurban dan domba untuk aqiqah dalam jumlah satuan maupun banyak. Setiap domba dipilih dari kandang sendiri, ditimbang, dan diperiksa sebelum dikirim.",
+    checks: [
+      "Domba sehat, sesuai syariat",
+      "Pilihan bobot dan harga transparan",
+      "Pengiriman ke lokasi pelanggan",
+      "Pendampingan perawatan dan penanganan",
+    ],
+    aqiqahCta: "Konsultasi aqiqah",
+    qurbanCta: "Konsultasi kurban",
+    aqiqahMessage:
+      "Assalamualaikum, saya ingin konsultasi domba untuk aqiqah. Mohon info pilihan bobot dan harga.",
+    qurbanMessage:
+      "Assalamualaikum, saya ingin konsultasi domba untuk kurban. Mohon info ketersediaan dan harga.",
+    caption: "Domba jantan, siap kurban",
+  },
+  process: {
+    eyebrow: "05 — Alur",
+    title: "Dari kandang ke meja.",
+    steps: [
+      {
+        title: "Kebutuhan & bobot",
+        body: "Kami bantu pilih domba sesuai kebutuhan: kurban, aqiqah, rumah makan, atau pembibitan.",
+      },
+      {
+        title: "Pakan & perawatan",
+        body: "Pakan bergizi, pemeriksaan kesehatan rutin, dan kandang panggung yang kering.",
+      },
+      {
+        title: "Pengiriman",
+        body: "Diantar ke lokasi pelanggan sesuai wilayah layanan, satuan maupun jumlah besar.",
+      },
+      {
+        title: "Pendampingan",
+        body: "Informasi perawatan, pemilihan, dan penanganan domba bila dibutuhkan.",
+      },
+    ],
+  },
+  reasons: {
+    eyebrow: "06 — Mengapa kami",
+    title: "Tujuh alasan pelanggan kembali.",
+    items: [
+      "Domba sehat dan berkualitas",
+      "Pakan berkualitas",
+      "Perawatan optimal",
+      "Pelayanan amanah dan profesional",
+      "Harga kompetitif dan transparan",
+      "Pengiriman sesuai wilayah layanan",
+      "Pendampingan pelanggan",
+    ],
+  },
+  markets: {
+    eyebrow: "07 — Pasar",
+    title: "Siapa yang kami pasok.",
+    items: [
+      "Rumah Pemotongan Hewan (RPH)",
+      "Rumah makan & warung sate",
+      "Pedagang ternak",
+      "Rumah aqiqah",
+      "Masjid",
+      "Pondok pesantren",
+      "Komunitas & instansi",
+    ],
+    note: "Populasi 2.000 ekor di farm kami, didukung mitra yang siap melayani kebutuhan pasokan domba.",
+  },
+  promos: {
+    eyebrow: "Promo",
+    title: "Promo terbaru.",
+    desc: "Penawaran yang sedang berlaku bulan ini.",
+    empty: "Belum ada promo aktif. Hubungi kami untuk penawaran bulan ini.",
+    validUntil: "Berlaku sampai",
+    cta: "Tanyakan via WhatsApp",
+    message: "Assalamualaikum, saya ingin menanyakan promo yang sedang berlaku.",
+  },
+  gallery: {
+    eyebrow: "Galeri",
+    title: "Di dalam kandang.",
+    desc: "Dokumentasi langsung dari farm Cemanglek dan aktivitas harian.",
+    photos: [
+      { src: "/images/barn-wide.jpg", alt: "Baris kandang dan lorong farm Cemanglek", caption: "Lorong kandang" },
+      { src: "/images/barn-corridor.jpg", alt: "Domba di bilik kandang kayu", caption: "Bilik kandang" },
+      { src: "/images/flock-close.jpg", alt: "Grup domba sehat di kandang", caption: "Grup domba" },
+    ],
+  },
+  reviews: {
+    eyebrow: "Ulasan",
+    title: "Kata pelanggan.",
+    desc: "Ulasan yang tampil sudah kami periksa. Kirim pengalaman Anda lewat formulir di samping.",
+    empty: "Belum ada ulasan yang tampil.",
+    formTitle: "Tulis ulasan",
+    name: "Nama",
+    namePlaceholder: "Nama Anda",
+    city: "Kota",
+    cityPlaceholder: "Semarang",
+    rating: "Penilaian",
+    message: "Ulasan",
+    messagePlaceholder: "Ceritakan pengalaman Anda memesan domba.",
+    submit: "Kirim ulasan",
+    sending: "Mengirim…",
+    success: "Terima kasih. Ulasan Anda tampil setelah kami periksa.",
+    error: "Ulasan gagal dikirim. Coba lagi sebentar.",
+    moderation: "Ulasan diperiksa dulu sebelum tampil di halaman ini.",
+    average: "rata-rata",
+    count: "ulasan",
+  },
+  contact: {
+    eyebrow: "Kontak",
+    title: "Bicara langsung dengan kami.",
+    desc: "Tanyakan ketersediaan, bobot, dan harga hari ini. Kami balas pada jam kerja.",
+    wa: "WhatsApp & telepon",
+    email: "Email",
+    farm: "Farm",
+    office: "Kantor",
+    openMap: "Buka peta",
+    cta: "Chat WhatsApp",
+    message: "Assalamualaikum, saya ingin menanyakan domba di Yahya Rizki Bersama Farm.",
+  },
+  footer: {
+    tagline: "Domba sehat untuk kurban, aqiqah, dan kebutuhan daging — dari kandang sendiri sejak 2014.",
+    visit: "Kunjungi",
+    pages: "Halaman",
+    rights: "Hak cipta dilindungi.",
+    admin: "Masuk admin",
+  },
+  common: {
+    close: "Tutup",
+    menu: "Menu",
+    backToTop: "Kembali ke atas",
+  },
+};
+
+const en: typeof id = {
+  meta: {
+    title: "Yahya Rizki Bersama Farm — Qurban, Aqiqah & Sheep Fattening",
+    description:
+      "Sheep fattening since 2014 in Limbangan, Kendal. Healthy sheep for qurban, aqiqah, restaurants, and breeding. 2,000 head, delivering across Central Java, Yogyakarta, Cirebon, and Bogor.",
+  },
+  nav: {
+    home: "Home",
+    about: "About",
+    services: "Services",
+    gallery: "Gallery",
+    promo: "Promo",
+    reviews: "Reviews",
+    contact: "Contact",
+    cta: "Order sheep",
+    langSwitch: "Bahasa Indonesia",
+    admin: "Admin",
+  },
+  hero: {
+    eyebrow: "Sheep farm · Limbangan, Kendal · Since 2014",
+    titleA: "Healthy sheep,",
+    titleB: "honest trade.",
+    desc: "Fattened sheep for qurban, aqiqah, restaurants, and breeding. Two thousand head raised in Cemanglek, delivered to Semarang, Tegal, Yogyakarta, Cirebon, and Bogor.",
+    cta: "Order on WhatsApp",
+    secondary: "See services",
+    caption: "Cemanglek barn, Limbangan",
+    live: "Live pasture",
+    fallback: "Pasture view",
+    stats: [
+      { value: "2,000", label: "Head on farm" },
+      { value: "550–700", label: "Head / month" },
+      { value: "2014", label: "Established" },
+      { value: "5", label: "Delivery areas" },
+    ],
+  },
+  marquee: [
+    "Qurban",
+    "Aqiqah",
+    "Fattening",
+    "Breeding",
+    "Fresh carcass",
+    "Ready-to-cook satay",
+    "Sheepskin",
+    "Organic fertilizer",
+  ],
+  about: {
+    eyebrow: "01 — About",
+    title: "Fattening sheep on the Limbangan hills since 2014.",
+    lead: "Yahya Rizki Bersama Farm runs a sheep fattening operation for meat supply, breeding stock, and rams for qurban.",
+    body: "Meat from our young, well-finished sheep is tender and low in fat. Monthly sales are never below 550–700 head.",
+    pillars: [
+      {
+        title: "Fattening",
+        body: "Sheep for restaurants, satay stalls, qurban, aqiqah, and Hajj Dam — weights matched to market demand.",
+      },
+      {
+        title: "Breeding",
+        body: "Quality breeding stock for fattening farms and breeding operations.",
+      },
+      {
+        title: "Processing",
+        body: "Fresh carcass, ready-to-cook satay, sheepskin, and organic fertilizer from manure (KOHE).",
+      },
+    ],
+    regionNote:
+      "Supplying restaurants and satay stalls in Semarang, Tegal regency, Yogyakarta, Cirebon regency, and Bogor.",
+    photoNote: "Raised-floor barn, Cemanglek",
+  },
+  vision: {
+    eyebrow: "02 — Vision & mission",
+    title: "Leading, trusted, sustainable.",
+    visionLabel: "Vision",
+    vision:
+      "To be a leading, trusted, and sustainable sheep fattening farm that produces quality sheep — prioritising professionalism, animal welfare, and the blessing of the business.",
+    missionLabel: "Mission",
+    missions: [
+      "Provide sheep that are healthy, high quality, and suited to customer needs.",
+      "Apply sound husbandry: nutritious feed, health care, and optimal rearing.",
+      "Build customer trust through honest, trustworthy, and professional service.",
+      "Grow sustainably by adopting innovation in livestock farming.",
+      "Create economic and social benefit for the surrounding community while supplying quality animals to restaurants, stalls, qurban, and aqiqah.",
+    ],
+    mottoLabel: "Motto",
+    motto: "Quality, Trust & Blessing",
+  },
+  services: {
+    eyebrow: "03 — Products & services",
+    title: "Four ways we supply sheep.",
+    items: [
+      {
+        title: "Fattened sheep",
+        body: "Fattened rams and ewes for restaurants, satay stalls, qurban, aqiqah, and breeding.",
+        meta: "Weights to order",
+      },
+      {
+        title: "Qurban-ready sheep",
+        body: "Healthy sheep, compliant with Islamic requirements, in a range of weights and prices.",
+        meta: "Rams & ewes",
+      },
+      {
+        title: "Live sheep sales",
+        body: "Single animals or large volumes — for farmers, traders, and institutions.",
+        meta: "Single / wholesale",
+      },
+      {
+        title: "Breeding stock",
+        body: "Quality stock for fattening farms and other breeding operations.",
+        meta: "For herd development",
+      },
+    ],
+    valueEyebrow: "Added value",
+    valueTitle: "Nothing from a single animal goes to waste.",
+    values: ["Fresh meat (carcass)", "Processed meat — ready-to-cook satay", "Sheepskin", "Organic fertilizer (KOHE)"],
+  },
+  qurban: {
+    eyebrow: "04 — Aqiqah & qurban",
+    title: "Aqiqah and qurban, one standard: healthy and compliant.",
+    body: "We supply rams for qurban and sheep for aqiqah, in single units or larger numbers. Every animal is selected from our own barn, weighed, and checked before delivery.",
+    checks: [
+      "Healthy sheep, compliant with Islamic requirements",
+      "Transparent weight and price options",
+      "Delivery to the customer's location",
+      "Guidance on care and handling",
+    ],
+    aqiqahCta: "Aqiqah enquiry",
+    qurbanCta: "Qurban enquiry",
+    aqiqahMessage:
+      "Assalamualaikum, I would like to ask about sheep for aqiqah. Please share weight and price options.",
+    qurbanMessage:
+      "Assalamualaikum, I would like to ask about sheep for qurban. Please share availability and pricing.",
+    caption: "Qurban-ready ram",
+  },
+  process: {
+    eyebrow: "05 — Process",
+    title: "From barn to table.",
+    steps: [
+      {
+        title: "Needs & weight",
+        body: "We help you pick sheep for qurban, aqiqah, restaurants, or breeding.",
+      },
+      {
+        title: "Feed & care",
+        body: "Nutritious feed, routine health checks, and dry raised-floor pens.",
+      },
+      {
+        title: "Delivery",
+        body: "Delivered to your location within our service areas, single or bulk.",
+      },
+      {
+        title: "Aftercare",
+        body: "Guidance on care, selection, and handling of the animals when needed.",
+      },
+    ],
+  },
+  reasons: {
+    eyebrow: "06 — Why us",
+    title: "Seven reasons customers return.",
+    items: [
+      "Healthy, high-quality sheep",
+      "Quality feed",
+      "Optimal care",
+      "Honest, professional service",
+      "Competitive, transparent pricing",
+      "Delivery within our service areas",
+      "Customer guidance",
+    ],
+  },
+  markets: {
+    eyebrow: "07 — Market",
+    title: "Who we supply.",
+    items: [
+      "Slaughterhouses (RPH)",
+      "Restaurants & satay stalls",
+      "Livestock traders",
+      "Aqiqah services",
+      "Mosques",
+      "Islamic boarding schools",
+      "Communities & institutions",
+    ],
+    note: "A population of 2,000 head on our farm, backed by partners ready to serve bulk sheep supply.",
+  },
+  promos: {
+    eyebrow: "Promo",
+    title: "Latest offers.",
+    desc: "Offers running this month.",
+    empty: "No active offers right now. Message us for this month's pricing.",
+    validUntil: "Valid until",
+    cta: "Ask on WhatsApp",
+    message: "Assalamualaikum, I would like to ask about current offers.",
+  },
+  gallery: {
+    eyebrow: "Gallery",
+    title: "Inside the barn.",
+    desc: "Documented on location at Cemanglek and in our daily work.",
+    photos: [
+      { src: "/images/barn-wide.jpg", alt: "Barn rows and walkway at Cemanglek", caption: "Barn walkway" },
+      { src: "/images/barn-corridor.jpg", alt: "Sheep in timber pens", caption: "Timber pens" },
+      { src: "/images/flock-close.jpg", alt: "Group of healthy sheep in the barn", caption: "The flock" },
+    ],
+  },
+  reviews: {
+    eyebrow: "Reviews",
+    title: "What customers say.",
+    desc: "Published reviews have been checked by our team. Share your experience with the form.",
+    empty: "No reviews published yet.",
+    formTitle: "Write a review",
+    name: "Name",
+    namePlaceholder: "Your name",
+    city: "City",
+    cityPlaceholder: "Semarang",
+    rating: "Rating",
+    message: "Review",
+    messagePlaceholder: "Tell us about your experience ordering sheep.",
+    submit: "Send review",
+    sending: "Sending…",
+    success: "Thank you. Your review will appear once we have checked it.",
+    error: "Could not send your review. Please try again shortly.",
+    moderation: "Reviews are checked before they appear on this page.",
+    average: "average",
+    count: "reviews",
+  },
+  contact: {
+    eyebrow: "Contact",
+    title: "Talk to us directly.",
+    desc: "Ask about availability, weight, and today's price. We reply during working hours.",
+    wa: "WhatsApp & phone",
+    email: "Email",
+    farm: "Farm",
+    office: "Office",
+    openMap: "Open map",
+    cta: "Chat on WhatsApp",
+    message: "Assalamualaikum, I would like to ask about sheep at Yahya Rizki Bersama Farm.",
+  },
+  footer: {
+    tagline: "Healthy sheep for qurban, aqiqah, and meat supply — from our own barn since 2014.",
+    visit: "Visit",
+    pages: "Pages",
+    rights: "All rights reserved.",
+    admin: "Admin login",
+  },
+  common: {
+    close: "Close",
+    menu: "Menu",
+    backToTop: "Back to top",
+  },
+};
+
+export const dict = { id, en };
+export type Dict = typeof id;
+export const getDict = (lang: Lang): Dict => dict[lang];
