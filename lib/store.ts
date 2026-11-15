@@ -1,4 +1,4 @@
-import { get, put } from "@vercel/blob";
+import { BlobPreconditionFailedError, get, put } from "@vercel/blob";
 import {
   AdminContent,
   Promo,
@@ -61,7 +61,7 @@ function normalizeDb(input: Partial<Db> | undefined): Db {
 
 /* ---------------- remote store (Vercel Blob) ---------------- */
 
-async function readRemote(): Promise<Db | null> {
+async function readRemote(): Promise<{ db: Db; etag: string } | null> {
   if (!storageConfigured) return null;
   try {
     const result = await get(DB_PATH, {
@@ -71,28 +71,23 @@ async function readRemote(): Promise<Db | null> {
     });
     if (!result || result.statusCode !== 200 || !result.stream) return null;
     const raw = await new Response(result.stream).text();
-    return normalizeDb(JSON.parse(raw) as Partial<Db>);
+    return { db: normalizeDb(JSON.parse(raw) as Partial<Db>), etag: result.blob.etag };
   } catch (err) {
     console.error("[store] read failed:", (err as Error).message);
     return null;
   }
 }
 
-async function writeRemote(db: Db): Promise<boolean> {
-  try {
-    await put(DB_PATH, JSON.stringify(db), {
-      access: "private",
-      token: BLOB_TOKEN,
-      allowOverwrite: true,
-      addRandomSuffix: false,
-      contentType: "application/json",
-      cacheControlMaxAge: 60,
-    });
-    return true;
-  } catch (err) {
-    console.error("[store] write failed:", (err as Error).message);
-    return false;
-  }
+async function writeRemote(db: Db, etag?: string): Promise<void> {
+  await put(DB_PATH, JSON.stringify(db), {
+    access: "private",
+    token: BLOB_TOKEN,
+    allowOverwrite: true,
+    addRandomSuffix: false,
+    contentType: "application/json",
+    cacheControlMaxAge: 60,
+    ifMatch: etag,
+  });
 }
 
 /* ---------------- local development store ---------------- */
@@ -118,19 +113,37 @@ async function writeLocal(db: Db): Promise<void> {
 }
 
 async function loadDb(): Promise<Db> {
-  return (await readRemote()) ?? (await readLocal()) ?? emptyDb();
+  return (await readRemote())?.db ?? (await readLocal()) ?? emptyDb();
 }
 
-async function saveDb(db: Db): Promise<{ ok: boolean; error?: string }> {
-  if (storageConfigured) {
-    const ok = await writeRemote(db);
-    return ok ? { ok: true } : { ok: false, error: "UPSTREAM_ERROR" };
-  }
-  if (DEV) {
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function mutate(apply: (db: Db) => void): Promise<{ ok: boolean; error?: string }> {
+  if (!storageConfigured) {
+    if (!DEV) return { ok: false, error: "DATABASE_NOT_CONFIGURED" };
+    const db = (await readLocal()) ?? emptyDb();
+    apply(db);
     await writeLocal(db);
     return { ok: true };
   }
-  return { ok: false, error: "DATABASE_NOT_CONFIGURED" };
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const current = await readRemote();
+    const db = current?.db ?? emptyDb();
+    apply(db);
+    try {
+      await writeRemote(db, current?.etag);
+      return { ok: true };
+    } catch (err) {
+      if (!(err instanceof BlobPreconditionFailedError)) {
+        console.error("[store] write failed:", (err as Error).message);
+        return { ok: false, error: "UPSTREAM_ERROR" };
+      }
+      await sleep(120 * (attempt + 1));
+    }
+  }
+  console.error("[store] write conflicted repeatedly");
+  return { ok: false, error: "UPSTREAM_ERROR" };
 }
 
 /* ---------------- public reads ---------------- */
@@ -172,47 +185,47 @@ export async function submitReview(
     status: "pending",
     createdAt: new Date().toISOString(),
   };
-  const db = await loadDb();
-  db.reviews.unshift(review);
-  return saveDb(db);
+  return mutate((db) => {
+    db.reviews.unshift(review);
+  });
 }
 
 export async function adminUpsertReview(
   review: Review,
 ): Promise<{ ok: boolean; error?: string }> {
-  const db = await loadDb();
-  const index = db.reviews.findIndex((r) => r.id === review.id);
-  if (index >= 0) db.reviews[index] = review;
-  else db.reviews.unshift(review);
-  return saveDb(db);
+  return mutate((db) => {
+    const index = db.reviews.findIndex((r) => r.id === review.id);
+    if (index >= 0) db.reviews[index] = review;
+    else db.reviews.unshift(review);
+  });
 }
 
 export async function adminDeleteReview(id: string) {
-  const db = await loadDb();
-  db.reviews = db.reviews.filter((r) => r.id !== id);
-  return saveDb(db);
+  return mutate((db) => {
+    db.reviews = db.reviews.filter((r) => r.id !== id);
+  });
 }
 
 export async function adminUpsertPromo(
   promo: Promo,
 ): Promise<{ ok: boolean; error?: string }> {
-  const db = await loadDb();
-  const index = db.promos.findIndex((p) => p.id === promo.id);
-  if (index >= 0) db.promos[index] = promo;
-  else db.promos.unshift(promo);
-  return saveDb(db);
+  return mutate((db) => {
+    const index = db.promos.findIndex((p) => p.id === promo.id);
+    if (index >= 0) db.promos[index] = promo;
+    else db.promos.unshift(promo);
+  });
 }
 
 export async function adminDeletePromo(id: string) {
-  const db = await loadDb();
-  db.promos = db.promos.filter((p) => p.id !== id);
-  return saveDb(db);
+  return mutate((db) => {
+    db.promos = db.promos.filter((p) => p.id !== id);
+  });
 }
 
 export async function adminSaveSettings(settings: SiteSettings) {
-  const db = await loadDb();
-  db.settings = normalizeSettings(settings);
-  return saveDb(db);
+  return mutate((db) => {
+    db.settings = normalizeSettings(settings);
+  });
 }
 
 /* ---------------- persistent login throttle ---------------- */
@@ -233,24 +246,23 @@ export async function loginLocked(key: string): Promise<boolean> {
 
 export async function loginFailed(key: string): Promise<void> {
   if (!storageConfigured && !DEV) return;
-  const db = await loadDb();
-  const entry = db.login[key];
-  const now = Date.now();
-  db.login[key] =
-    entry && entry.resetAt > now
-      ? { fails: entry.fails + 1, resetAt: entry.resetAt }
-      : { fails: 1, resetAt: now + LOGIN_WINDOW_MS };
+  await mutate((db) => {
+    const entry = db.login[key];
+    const now = Date.now();
+    db.login[key] =
+      entry && entry.resetAt > now
+        ? { fails: entry.fails + 1, resetAt: entry.resetAt }
+        : { fails: 1, resetAt: now + LOGIN_WINDOW_MS };
 
-  for (const [k, v] of Object.entries(db.login)) {
-    if (v.resetAt <= now) delete db.login[k];
-  }
-  await saveDb(db);
+    for (const [k, v] of Object.entries(db.login)) {
+      if (v.resetAt <= now) delete db.login[k];
+    }
+  });
 }
 
 export async function loginSucceeded(key: string): Promise<void> {
   if (!storageConfigured && !DEV) return;
-  const db = await loadDb();
-  if (!db.login[key]) return;
-  delete db.login[key];
-  await saveDb(db);
+  await mutate((db) => {
+    delete db.login[key];
+  });
 }
