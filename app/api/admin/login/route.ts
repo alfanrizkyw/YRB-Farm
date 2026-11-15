@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
   }
 
-  // Kunci per IP, tahan lintas instance (Apps Script CacheService).
+  // Kunci per IP, tahan lintas instance (disimpan di Vercel Blob).
   const throttleKey = `login:${ip}`;
   if (await loginLocked(throttleKey)) {
     return NextResponse.json(

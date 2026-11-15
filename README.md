@@ -5,7 +5,7 @@ Dibangun dengan Next.js 16 dan React 19. Bahasa Indonesia & Inggris.
 
 - Situs: `/` (ID) dan `/en` (EN)
 - Panel internal: tidak ditautkan dari situs, `noindex`, dan diblokir robots
-- Database: Google Sheets via Google Apps Script
+- Database: Vercel Blob (dokumen JSON privat `yrb-farm/db.json`)
 
 ## Menjalankan lokal
 
@@ -15,31 +15,23 @@ cp .env.example .env.local   # isi ADMIN_PASSWORD
 npm run dev
 ```
 
-Buka http://localhost:3000. Tanpa `SHEET_API_URL`, data disimpan sementara di
-`.data/db.json` (hanya mode development).
+Buka http://localhost:3000. Tanpa `BLOB_READ_WRITE_TOKEN`, data disimpan
+sementara di `.data/db.json` (hanya mode development).
 
-## Menghubungkan Google Sheets
+## Database otomatis
 
-1. Buka spreadsheet database → menu **Extensions** → **Apps Script**.
-2. Hapus isi `Code.gs`, tempel seluruh isi `google-apps-script/Code.gs`, lalu **Save**.
-3. **Project Settings** (ikon gerigi) → **Script Properties** → **Add script property**.
-   - Property: `API_SECRET`
-   - Value: teks acak panjang (contoh buat dengan 40+ karakter). Simpan.
-4. **Deploy** → **New deployment** → pilih **Web app**.
-   - Description: `Berkah Rizki Bersama API`
-   - Execute as: **Me**
-   - Who has access: **Anyone**
-   - Klik **Deploy**, izinkan akses, lalu salin URL yang berakhiran `/exec`.
-5. Di Vercel → project → **Settings** → **Environment Variables**, tambahkan:
-   - `ADMIN_PASSWORD` = password panel admin (jangan disimpan di repo)
-   - `SESSION_SECRET` = teks acak 40+ karakter untuk menandatangani sesi login
-   - `SHEET_API_URL` = URL `/exec` tadi
-   - `SHEET_API_TOKEN` = nilai `API_SECRET` tadi
-   - Setiap kali `Code.gs` berubah: **Deploy → Manage deployments → Edit → New version → Deploy** (URL tetap sama).
-6. **Deployments** → **Redeploy** agar variabel terbaca.
+Produksi memakai satu dokumen JSON di Vercel Blob. Tidak ada spreadsheet,
+tidak ada langkah penyiapan manual di Google.
 
-Tab `reviews`, `promos`, dan `settings` dibuat otomatis oleh Apps Script saat
-pertama kali dipakai.
+1. Vercel → project → **Storage** → hubungkan Blob store (Private).
+2. Hubungkan ke project untuk Production dan Preview. Vercel otomatis
+   menambahkan `BLOB_READ_WRITE_TOKEN`.
+3. Isi juga `ADMIN_PASSWORD` dan `SESSION_SECRET` (teks acak 40+ karakter) di
+   **Settings → Environment Variables**.
+4. **Deployments → Redeploy** agar variabel terbaca.
+
+Berkas data dibuat sendiri saat ulasan/promo/konfigurasi pertama disimpan,
+lalu bisa dilihat di Vercel → Storage → Blob → `yrb-farm/db.json`.
 
 ## Panel admin
 
@@ -58,9 +50,10 @@ diterbitkan admin.
 - Password admin hanya dicek di server; tidak pernah dikirim ke browser.
 - Sesi memakai cookie HttpOnly bertanda tangan HMAC, berlaku 8 jam.
 - Semua endpoint admin menolak permintaan tanpa sesi dan tanpa header `x-yrb-admin`.
-- Login dibatasi 5 percobaan salah / 15 menit per IP, dihitung permanen di Apps Script (tahan lintas instance Vercel), pengiriman ulasan 4 / jam per IP.
-- Token Apps Script hanya ada di environment server, tidak masuk bundle klien.
-- Nilai sel yang diawali `=`, `+`, `-`, `@` dinetralkan agar tidak jadi formula.
+- Login dibatasi 5 percobaan salah / 15 menit per IP, dihitung permanen di Blob
+  (tahan lintas instance Vercel), pengiriman ulasan 4 / jam per IP.
+- Token Blob hanya ada di environment server, tidak masuk bundle klien.
+- Teks dari pengunjung dibersihkan dari karakter kontrol sebelum disimpan.
 - `.env*`, `.data/`, `node_modules/`, dan hasil build diabaikan git.
 
 ## Struktur
@@ -72,5 +65,4 @@ app/(admin)      panel admin
 app/api          endpoint ulasan publik dan admin
 components       header, hero, form ulasan, admin
 lib              data store, sesi, validasi, i18n
-google-apps-script/Code.gs   API Google Sheets
 ```

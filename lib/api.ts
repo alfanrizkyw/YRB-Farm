@@ -21,7 +21,7 @@ export function storeError(error?: string) {
   const status = error === "DATABASE_NOT_CONFIGURED" ? 503 : 502;
   const message =
     error === "DATABASE_NOT_CONFIGURED"
-      ? "Database belum terhubung. Hubungkan Google Sheets lewat Apps Script."
+      ? "Database belum terhubung. Hubungkan Vercel Blob ke project."
       : "Gagal menyimpan ke database. Coba lagi.";
   return NextResponse.json({ error: message }, { status });
 }

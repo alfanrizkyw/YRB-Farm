@@ -133,8 +133,8 @@ export default function AdminApp({ authed, configured, initial }: Props) {
           <div className="notice">
             <div>
               <strong>Database belum terhubung.</strong> Panel bisa dibuka, tetapi perubahan belum tersimpan.
-              Hubungkan Google Sheets lewat Apps Script, lalu set <code>SHEET_API_URL</code> dan{" "}
-              <code>SHEET_API_TOKEN</code> di Vercel.
+              Hubungkan Vercel Blob ke project, lalu pasang variabel <code>BLOB_READ_WRITE_TOKEN</code> di
+              Vercel.
             </div>
           </div>
         ) : null}
