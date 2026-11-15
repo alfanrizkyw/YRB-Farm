@@ -27,6 +27,11 @@ export type SiteSettings = {
   farmAddress: string;
   officeAddress: string;
   announcement: string;
+  population: number;
+  monthlyMin: number;
+  monthlyMax: number;
+  foundedYear: number;
+  supplyAreas: number;
 };
 
 export type PublicContent = {
@@ -50,4 +55,9 @@ export const defaultSettings: SiteSettings = {
     "Dsn. Cemanglek, Margosari, Kec. Limbangan, Kendal, Jawa Tengah",
   officeAddress: "Jl. Klentengsari 11E, Banyumanik, Semarang",
   announcement: "",
+  population: 2000,
+  monthlyMin: 550,
+  monthlyMax: 700,
+  foundedYear: 2014,
+  supplyAreas: 5,
 };

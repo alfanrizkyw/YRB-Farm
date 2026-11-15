@@ -43,6 +43,22 @@ export default function Home({ lang, content }: { lang: Lang; content: PublicCon
   const avg = averageRating(reviews.map((review) => review.rating));
   const avgNumber = reviews.length ? Number(avg.replace(",", ".")) : 0;
 
+  const number = new Intl.NumberFormat(lang === "id" ? "id-ID" : "en-US");
+  const statValues: Record<string, string> = {
+    year: String(settings.foundedYear),
+    population: number.format(settings.population),
+    range: `${number.format(settings.monthlyMin)}–${number.format(settings.monthlyMax)}`,
+    areas: number.format(settings.supplyAreas),
+  };
+  const fill = (text: string) =>
+    text.replace(/\{(\w+)\}/g, (match, key: string) => statValues[key] ?? match);
+  const statCards = [
+    statValues.population,
+    statValues.range,
+    statValues.year,
+    statValues.areas,
+  ];
+
   return (
     <>
       <a className="skip" href="#main">
@@ -83,7 +99,7 @@ export default function Home({ lang, content }: { lang: Lang; content: PublicCon
                 </span>
               </h1>
               <p className="hero-lead" data-reveal style={delay(2)}>
-                {t.hero.lead}
+                {fill(t.hero.lead)}
               </p>
               <div className="hero-actions" data-reveal style={delay(3)}>
                 <a className="btn btn--cream" href="#produk">
@@ -122,7 +138,7 @@ export default function Home({ lang, content }: { lang: Lang; content: PublicCon
           <ul className="hero-stats">
             {t.hero.stats.map((stat, i) => (
               <li key={stat.label} data-reveal style={delay(i)}>
-                <strong>{stat.value}</strong>
+                <strong>{statCards[i]}</strong>
                 <span>{stat.label}</span>
               </li>
             ))}
@@ -132,7 +148,7 @@ export default function Home({ lang, content }: { lang: Lang; content: PublicCon
         <div className="marquee" aria-hidden="true">
           <div className="marquee-track">
             {[...t.marquee, ...t.marquee].map((item, i) => (
-              <span key={`${item}-${i}`}>{item}</span>
+              <span key={`${item}-${i}`}>{fill(item)}</span>
             ))}
           </div>
         </div>

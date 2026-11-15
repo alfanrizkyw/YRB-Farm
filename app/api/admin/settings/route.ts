@@ -23,6 +23,11 @@ export async function POST(req: Request) {
     farmAddress: stripControl(parsed.data.farmAddress),
     officeAddress: stripControl(parsed.data.officeAddress),
     announcement: stripControl(parsed.data.announcement),
+    population: parsed.data.population,
+    monthlyMin: parsed.data.monthlyMin,
+    monthlyMax: parsed.data.monthlyMax,
+    foundedYear: parsed.data.foundedYear,
+    supplyAreas: parsed.data.supplyAreas,
   };
 
   const result = await adminSaveSettings(settings);

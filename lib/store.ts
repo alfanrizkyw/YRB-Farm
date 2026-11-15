@@ -39,6 +39,11 @@ const emptyContent: PublicContent = {
   settings: defaultSettings,
 };
 
+function count(value: unknown, fallback: number): number {
+  const n = Math.round(Number(value));
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+}
+
 function normalizeSettings(input: Partial<SiteSettings> | undefined): SiteSettings {
   return {
     waNumber: (input?.waNumber || defaultSettings.waNumber).replace(/[^\d]/g, ""),
@@ -47,6 +52,11 @@ function normalizeSettings(input: Partial<SiteSettings> | undefined): SiteSettin
     farmAddress: input?.farmAddress?.trim() || defaultSettings.farmAddress,
     officeAddress: input?.officeAddress?.trim() || defaultSettings.officeAddress,
     announcement: input?.announcement?.trim() || "",
+    population: count(input?.population, defaultSettings.population),
+    monthlyMin: count(input?.monthlyMin, defaultSettings.monthlyMin),
+    monthlyMax: count(input?.monthlyMax, defaultSettings.monthlyMax),
+    foundedYear: count(input?.foundedYear, defaultSettings.foundedYear),
+    supplyAreas: count(input?.supplyAreas, defaultSettings.supplyAreas),
   };
 }
 

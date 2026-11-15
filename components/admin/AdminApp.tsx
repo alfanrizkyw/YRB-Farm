@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 import type { AdminContent, Promo, Review, ReviewStatus, SiteSettings } from "@/lib/types";
+import { defaultSettings } from "@/lib/types";
 
 type Props = {
   authed: boolean;
@@ -54,16 +55,7 @@ export default function AdminApp({ authed, configured, initial }: Props) {
   const [tab, setTab] = useState<"dashboard" | "reviews" | "promos">("dashboard");
   const [reviews, setReviews] = useState<Review[]>(initial?.reviews ?? []);
   const [promos, setPromos] = useState<Promo[]>(initial?.promos ?? []);
-  const [settings, setSettings] = useState<SiteSettings>(
-    initial?.settings ?? {
-      waNumber: "",
-      phoneDisplay: "",
-      email: "",
-      farmAddress: "",
-      officeAddress: "",
-      announcement: "",
-    },
-  );
+  const [settings, setSettings] = useState<SiteSettings>(initial?.settings ?? defaultSettings);
   const [toast, setToast] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
 
   useEffect(() => {
@@ -796,7 +788,7 @@ function DashboardPanel({
         <div>
           <p className="admin-eyebrow">Dasbor</p>
           <h1>Ringkasan & data situs</h1>
-          <p>Ubah nomor, alamat, dan email di sini. Perubahan langsung dipakai situs.</p>
+          <p>Ubah statistik beranda, nomor, alamat, dan email di sini. Perubahan langsung dipakai situs.</p>
         </div>
       </div>
 
@@ -863,11 +855,83 @@ function ContactForm({
   return (
     <section className="admin-section">
       <div className="admin-subhead">
-        <h2>Kontak & situs</h2>
-        <p>Nomor WhatsApp ini dipakai di semua tombol pesan pada situs.</p>
+        <h2>Statistik beranda</h2>
+        <p>Empat angka di bawah judul beranda, dipakai versi Indonesia dan Inggris.</p>
       </div>
 
       <form className="admin-form" onSubmit={submit} style={{ maxWidth: "720px" }}>
+        <div className="admin-grid2">
+          <div className="field">
+            <label>Populasi (ekor)</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={1000000}
+              value={form.population}
+              onChange={(e) => setForm({ ...form, population: e.target.valueAsNumber || 0 })}
+              required
+            />
+          </div>
+          <div className="field">
+            <label>Tahun berdiri</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={1900}
+              max={2100}
+              value={form.foundedYear}
+              onChange={(e) => setForm({ ...form, foundedYear: e.target.valueAsNumber || 0 })}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="admin-grid2">
+          <div className="field">
+            <label>Penjualan minimum (ekor/bulan)</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              max={1000000}
+              value={form.monthlyMin}
+              onChange={(e) => setForm({ ...form, monthlyMin: e.target.valueAsNumber || 0 })}
+              required
+            />
+          </div>
+          <div className="field">
+            <label>Penjualan maksimum (ekor/bulan)</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              max={1000000}
+              value={form.monthlyMax}
+              onChange={(e) => setForm({ ...form, monthlyMax: e.target.valueAsNumber || 0 })}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="field" style={{ maxWidth: "240px" }}>
+          <label>Wilayah pasok</label>
+          <input
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={99}
+            value={form.supplyAreas}
+            onChange={(e) => setForm({ ...form, supplyAreas: e.target.valueAsNumber || 0 })}
+            required
+          />
+        </div>
+
+        <div className="admin-subhead">
+          <h2>Kontak & alamat</h2>
+          <p>Nomor WhatsApp ini dipakai di semua tombol pesan pada situs.</p>
+        </div>
+
         <div className="admin-grid2">
           <div className="field">
             <label>Nomor WhatsApp (format internasional)</label>

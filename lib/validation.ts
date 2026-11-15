@@ -33,17 +33,27 @@ export const reviewCreateSchema = reviewInputSchema.extend({
   status: z.enum(["published", "pending", "hidden"]).default("published"),
 });
 
-export const settingsSchema = z.object({
-  waNumber: z
-    .string()
-    .trim()
-    .regex(/^(\+?62|0)\d{7,14}$/, "Nomor WhatsApp tidak valid"),
-  phoneDisplay: z.string().trim().min(6).max(30),
-  email: z.string().trim().email("Email tidak valid").max(80),
-  farmAddress: z.string().trim().min(5).max(180),
-  officeAddress: z.string().trim().min(5).max(180),
-  announcement: z.string().trim().max(160),
-});
+export const settingsSchema = z
+  .object({
+    waNumber: z
+      .string()
+      .trim()
+      .regex(/^(\+?62|0)\d{7,14}$/, "Nomor WhatsApp tidak valid"),
+    phoneDisplay: z.string().trim().min(6).max(30),
+    email: z.string().trim().email("Email tidak valid").max(80),
+    farmAddress: z.string().trim().min(5).max(180),
+    officeAddress: z.string().trim().min(5).max(180),
+    announcement: z.string().trim().max(160),
+    population: z.coerce.number().int().min(1).max(1000000),
+    monthlyMin: z.coerce.number().int().min(0).max(1000000),
+    monthlyMax: z.coerce.number().int().min(0).max(1000000),
+    foundedYear: z.coerce.number().int().min(1900).max(2100),
+    supplyAreas: z.coerce.number().int().min(1).max(99),
+  })
+  .refine((data) => data.monthlyMax >= data.monthlyMin, {
+    path: ["monthlyMax"],
+    message: "Penjualan maksimum harus lebih besar dari minimum",
+  });
 
 export const loginSchema = z.object({
   password: z.string().min(1).max(200),
