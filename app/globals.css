@@ -1052,34 +1052,16 @@ html[data-scrolled="true"] .head {
   will-change: transform;
 }
 
-.hero-mark::before {
-  content: "";
-  position: absolute;
-  inset: 2% -4%;
-  border-radius: 50%;
-  background: radial-gradient(
-    closest-side,
-    rgba(220, 233, 188, 0.26),
-    rgba(220, 233, 188, 0.08) 58%,
-    rgba(220, 233, 188, 0) 78%
-  );
-  pointer-events: none;
-}
-
-.hero-mark-logo {
+.hero-poster {
+  display: block;
   position: relative;
-  width: min(100%, 440px);
+  width: min(100%, 470px);
   height: auto;
-  filter: drop-shadow(0 26px 40px rgba(4, 14, 2, 0.42));
-}
-
-.hero-photo figcaption {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: center;
-  color: rgba(246, 242, 230, 0.62);
+  border-radius: clamp(18px, 2vw, 26px);
+  border: 1px solid rgba(246, 242, 230, 0.3);
+  box-shadow:
+    0 36px 72px -36px rgba(4, 14, 2, 0.9),
+    0 12px 28px -18px rgba(4, 14, 2, 0.7);
 }
 
 .hero-stats {
@@ -2895,8 +2877,8 @@ html[data-scrolled="true"] .head {
     justify-self: center;
   }
 
-  .hero-mark-logo {
-    width: min(100%, 360px);
+  .hero-poster {
+    width: min(100%, 400px);
   }
 
   .about-grid {

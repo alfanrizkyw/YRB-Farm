@@ -121,17 +121,16 @@ export default function Home({ lang, content }: { lang: Lang; content: PublicCon
             <figure className="hero-photo" data-reveal="fade" style={delay(1)}>
               <div className="hero-mark" data-parallax="0.02">
                 <Image
-                  className="hero-mark-logo"
-                  src="/images/logo-berkah.png"
-                  alt=""
-                  width={760}
-                  height={493}
+                  className="hero-poster"
+                  src="/images/hero-farm.webp"
+                  alt="Poster Berkah Rizki Bersama Farm: domba sehat, pakan berkualitas, alamat farm Cemanglek Limbangan Kendal, dan nomor WhatsApp 0811 290 002"
+                  width={1254}
+                  height={1254}
                   priority
-                  quality={95}
-                  sizes="(max-width: 980px) 340px, 440px"
+                  quality={90}
+                  sizes="(max-width: 620px) 88vw, (max-width: 980px) 420px, 470px"
                 />
               </div>
-              <figcaption>{t.hero.caption}</figcaption>
             </figure>
           </div>
 
